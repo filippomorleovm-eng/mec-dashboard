@@ -1,0 +1,1628 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moto Élite Care — Project Dashboard v3</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0f1c;--sf:#0f172a;--cd:#1e293b;--bd:#334155;--tx:#e2e8f0;--t2:#94a3b8;--t3:#64748b;--nv:#1B365D;--gd:#C49A2A;--gd2:#f0d878;--rd:#ef4444;--gn:#22c55e;--yl:#f59e0b}
+body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100vh}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+button{font-family:inherit;cursor:pointer}
+.hd{background:linear-gradient(135deg,var(--sf),var(--cd));border-bottom:1px solid var(--bd);padding:16px 22px}
+.hd-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.brand h1{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--gd),var(--gd2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.brand p{font-size:10px;color:var(--t3);letter-spacing:1px;margin-top:2px}
+.ring-area{display:flex;align-items:center;gap:12px}
+.ring-pct .num{font-size:26px;font-weight:700;color:var(--gd);line-height:1}
+.ring-pct .lbl{font-size:8px;color:var(--t3);text-align:center}
+.ring{width:80px;height:80px;position:relative}
+.ring svg{width:80px;height:80px;transform:rotate(-90deg)}
+.ring-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-in .n{font-size:11px;font-weight:600;color:var(--gd)}
+.ring-in .l{font-size:8px;color:var(--t3)}
+.sts{display:flex;gap:4px;margin-top:10px;flex-wrap:wrap}
+.st{background:var(--cd);border-radius:6px;padding:4px 9px;display:flex;align-items:center;gap:4px;font-size:10px}
+.st .dot{width:6px;height:6px;border-radius:50%}
+.st .v{font-weight:700;font-size:13px}
+.fl{padding:7px 22px;background:var(--sf);border-bottom:1px solid var(--bd);display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.vt{display:flex;background:var(--cd);border-radius:6px;overflow:hidden;margin-right:3px}
+.vt button{padding:4px 9px;font-size:10px;background:transparent;color:var(--t2);border:none}
+.vt button.on{background:var(--gd);color:var(--bg);font-weight:600}
+.si{background:var(--cd);border:1px solid var(--bd);border-radius:6px;padding:4px 8px;color:var(--tx);font-size:10px;outline:none;width:150px;font-family:inherit}
+.si::placeholder{color:var(--t3)}
+.fsel{background:var(--cd);border:1px solid var(--bd);border-radius:6px;padding:4px 7px;color:var(--tx);font-size:10px;cursor:pointer;font-family:inherit;outline:none}
+.fbtn{background:var(--cd);border:1px solid var(--bd);border-radius:6px;padding:4px 9px;color:var(--t2);font-size:10px}
+.fbtn.on{background:var(--rd);color:#fff;font-weight:600;border-color:var(--rd)}
+.abtn{background:var(--gd);color:var(--bg);border:none;border-radius:6px;padding:4px 9px;font-size:10px;font-weight:600}
+.xbtn{background:transparent;border:1px solid var(--gd);border-radius:6px;padding:4px 9px;color:var(--gd);font-size:10px}
+.rbtn{background:transparent;border:1px solid var(--bd);border-radius:6px;padding:4px 7px;color:var(--t3);font-size:9px;margin-left:auto}
+.main-wrap{display:flex;height:calc(100vh - 170px);overflow:hidden}
+.task-list{flex:1;overflow-y:auto;padding:12px 16px}
+.detail-panel{width:420px;background:var(--sf);border-left:1px solid var(--bd);overflow-y:auto;padding:16px;display:none;flex-shrink:0}
+.detail-panel.open{display:block}
+/* LIST ITEMS */
+.lg-t{font-size:12px;font-weight:700;margin:10px 0 5px;display:flex;align-items:center;gap:5px}
+.lg-t .cn{font-size:9px;color:var(--t3);font-weight:400}
+.lr{background:var(--cd);border-radius:6px;margin-bottom:2px;border:1px solid transparent;transition:.12s;cursor:pointer}
+.lr:hover{border-color:var(--bd)}
+.lr.sel{border-color:var(--gd);background:#1a2744}
+.lr-m{display:flex;align-items:center;gap:6px;padding:6px 10px}
+.lr-m .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.lr-m .id{font-size:9px;font-weight:700;width:30px;flex-shrink:0}
+.lr-m .cr{font-size:8px;color:var(--yl);font-weight:700;flex-shrink:0;width:12px}
+.lr-m .tk{font-size:10px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lr-m .rp{font-size:9px;color:var(--t3);width:95px;text-align:right;flex-shrink:0}
+.lr-m .dt{font-size:8px;color:var(--t3);width:75px;text-align:right;flex-shrink:0}
+.lr-m select{font-size:8px;font-weight:600;border:none;border-radius:3px;padding:2px 4px;cursor:pointer;outline:none;width:68px;flex-shrink:0;font-family:inherit}
+/* DETAIL PANEL */
+.dp-hd{display:flex;align-items:center;gap:6px;margin-bottom:12px}
+.dp-id{font-size:12px;font-weight:700;padding:2px 8px;border-radius:4px}
+.dp-cr{font-size:10px;color:var(--yl);background:rgba(251,191,36,.12);padding:2px 6px;border-radius:3px;font-weight:600}
+.dp-title{font-size:15px;font-weight:700;color:var(--tx);margin-bottom:10px;line-height:1.3}
+.dp-sbtns{display:flex;gap:3px;margin-bottom:12px}
+.dp-sbtns button{flex:1;padding:5px 0;font-size:9px;border-radius:4px;border:1px solid;font-family:inherit}
+.dp-section{margin-bottom:14px}
+.dp-section-title{font-size:10px;font-weight:700;color:var(--gd);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--bd)}
+.dp-desc{font-size:11px;line-height:1.5;color:var(--t2);margin-bottom:8px}
+.dp-check{display:flex;align-items:flex-start;gap:6px;margin-bottom:5px;font-size:11px;color:var(--tx);line-height:1.35}
+.dp-check input{margin-top:2px;flex-shrink:0;cursor:pointer}
+.dp-ref{font-size:10px;color:var(--t3);line-height:1.4;margin-bottom:3px;padding-left:8px;border-left:2px solid var(--gd)}
+.dp-ref a{color:var(--gd);text-decoration:none}
+.dp-ref a:hover{text-decoration:underline}
+.dp-field{margin-bottom:6px}
+.dp-field label{font-size:9px;color:var(--t3);display:block;margin-bottom:2px}
+.dp-field input,.dp-field select,.dp-field textarea{width:100%;background:var(--cd);border:1px solid var(--bd);border-radius:4px;padding:5px 8px;color:var(--tx);font-size:11px;font-family:inherit;outline:none}
+.dp-field textarea{min-height:50px;resize:vertical}
+.dp-del{background:transparent;border:1px solid var(--rd);border-radius:4px;padding:4px 10px;color:var(--rd);font-size:10px;margin-top:8px;width:100%}
+/* PROGRESS */
+.ps{padding:12px 22px;border-top:1px solid var(--bd)}
+.ps h3{font-family:'Playfair Display',serif;font-size:14px;color:var(--gd);margin-bottom:8px}
+.pg{display:flex;gap:6px;flex-wrap:wrap}
+.pc{background:var(--cd);border-radius:7px;padding:8px 10px;cursor:pointer;flex:1;min-width:140px}
+.pc-t{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.pc-t .nm{font-size:10px;font-weight:600}
+.pc-t .pt{font-size:10px;font-weight:700}
+.pc-b{height:3px;background:var(--bg);border-radius:2px;overflow:hidden}
+.pc-bf{height:100%;border-radius:2px;transition:width .4s}
+.pc-s{font-size:8px;color:var(--t3);margin-top:3px}
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
+.modal{background:var(--cd);border-radius:10px;padding:18px;width:100%;max-width:440px;max-height:85vh;overflow-y:auto;border:1px solid var(--bd)}
+.modal h2{font-family:'Playfair Display',serif;font-size:16px;color:var(--gd);margin-bottom:12px}
+.modal .fr{display:flex;flex-direction:column;gap:7px}
+.modal .fr label{font-size:10px;color:var(--t2);font-weight:600}
+.modal .fr input,.modal .fr select,.modal .fr textarea{background:var(--sf);border:1px solid var(--bd);border-radius:5px;padding:6px 9px;color:var(--tx);font-size:11px;font-family:inherit;outline:none;width:100%}
+.modal .fr textarea{min-height:50px;resize:vertical}
+.modal .btns{display:flex;gap:6px;margin-top:12px;justify-content:flex-end}
+.modal .btns button{padding:6px 14px;border-radius:5px;font-size:10px;font-weight:600;font-family:inherit}
+.modal .btns .cancel{background:transparent;border:1px solid var(--bd);color:var(--t2)}
+.modal .btns .save{background:var(--gd);border:none;color:var(--bg)}
+.empty{text-align:center;padding:14px;color:var(--bd);font-size:11px}
+@media(max-width:900px){.detail-panel{width:340px}.lr-m .rp,.lr-m .dt{display:none}}
+@media(max-width:650px){.main-wrap{flex-direction:column;height:auto}.detail-panel{width:100%;border-left:none;border-top:1px solid var(--bd)}.task-list{max-height:50vh}}
+
+.gw{overflow-x:auto;padding-bottom:10px}.gc{position:relative;min-width:850px}.gc-hd{display:flex;border-bottom:2px solid var(--bd);margin-bottom:2px;background:var(--sf)}.gc-lh{width:190px;flex-shrink:0;padding:5px 8px;font-size:9px;font-weight:700;color:var(--gd)}.gc-ds{flex:1;display:flex}.gc-d{flex:1;text-align:center;font-size:7px;color:var(--t3);padding:2px 0;border-left:1px solid rgba(51,65,85,.3);min-width:18px}.gc-d.gwe{background:rgba(255,255,255,.02)}.gc-d.gtd{background:rgba(196,154,42,.1);color:var(--gd);font-weight:700}.gc-st{font-size:10px;font-weight:700;padding:4px 8px;margin-top:3px;border-radius:3px}.gc-r{display:flex;align-items:center;height:20px;border-bottom:1px solid rgba(51,65,85,.2)}.gc-r:hover{background:rgba(255,255,255,.02)}.gc-r.gsel{background:rgba(196,154,42,.06)}.gc-lb{width:190px;flex-shrink:0;padding:0 6px;display:flex;align-items:center;gap:3px;overflow:hidden;cursor:pointer}.gc-lb .gid{font-size:7px;font-weight:700;width:24px;flex-shrink:0}.gc-lb .gcr{color:var(--yl);font-size:7px;flex-shrink:0}.gc-lb .gtx{font-size:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}.gc-bs{flex:1;display:flex;position:relative;height:20px}.gc-cl{flex:1;border-left:1px solid rgba(51,65,85,.12);min-width:18px}.gc-cl.gwe{background:rgba(255,255,255,.01)}.gc-br{position:absolute;height:10px;top:5px;border-radius:2px;min-width:3px;cursor:pointer}.gc-br:hover{opacity:.75}.gc-br span{font-size:6px;color:rgba(0,0,0,.5);font-weight:600;overflow:hidden;padding:0 2px;line-height:10px;white-space:nowrap}.gc-tl{position:absolute;top:0;bottom:0;width:2px;background:var(--rd);z-index:1;pointer-events:none}.gc-lg{display:flex;gap:10px;margin-top:8px;justify-content:center;flex-wrap:wrap}.gc-lg>div{display:flex;align-items:center;gap:3px;font-size:8px;color:var(--t2)}.gc-lg .gsw{width:10px;height:6px;border-radius:1px}.gps{background:var(--cd);border-radius:8px;padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}.gps .gpt{font-size:11px;font-weight:700;color:var(--gd)}.gps .gpi{font-size:10px;color:var(--t2)}.gps .gpi b{color:var(--tx)}.gps .gpa{font-size:10px;color:var(--rd);font-weight:600}
+.map-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;padding:4px}.map-card{background:var(--cd);border-radius:12px;padding:16px;cursor:pointer;transition:all .2s;border:2px solid transparent;position:relative;overflow:hidden}.map-card:hover{transform:translateY(-2px);border-color:var(--bd)}.map-card.mc-open{border-color:var(--gd);background:#1a2744}.mc-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}.mc-icon{font-size:24px;line-height:1}.mc-pct{font-size:22px;font-weight:700;line-height:1}.mc-name{font-size:13px;font-weight:700;margin-bottom:4px}.mc-sub{font-size:10px;color:var(--t3)}.mc-bar{height:5px;background:var(--bg);border-radius:3px;overflow:hidden;margin-top:10px}.mc-bar-fill{height:100%;border-radius:3px;transition:width .5s ease}.mc-stats{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}.mc-stat{font-size:9px;display:flex;align-items:center;gap:3px}.mc-stat .dot{width:5px;height:5px;border-radius:50%}.mc-expand{margin-top:14px;padding-top:12px;border-top:1px solid var(--bd)}.mc-task{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid rgba(51,65,85,.3)}.mc-task:last-child{border-bottom:none}.mc-task .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}.mc-task .tid{font-size:8px;font-weight:700;width:24px;flex-shrink:0;color:var(--t2)}.mc-task .tcr{font-size:8px;color:var(--yl);flex-shrink:0;width:10px}.mc-task .ttx{font-size:10px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mc-task select{font-size:8px;font-weight:600;border:none;border-radius:3px;padding:2px 4px;cursor:pointer;outline:none;width:68px;flex-shrink:0;font-family:inherit}.mc-task .tdet{font-size:10px;color:var(--t3);cursor:pointer;padding:0 4px}.mc-task .tdet:hover{color:var(--gd)}.mc-add{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:8px;padding:6px;background:var(--sf);border-radius:6px;font-size:10px;color:var(--t3);cursor:pointer;border:1px dashed var(--bd);transition:.2s}.mc-add:hover{border-color:var(--gd);color:var(--gd)}.map-summary{background:var(--cd);border-radius:10px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}.map-summary .ms-title{font-family:'Playfair Display',serif;font-size:16px;color:var(--gd)}.map-summary .ms-item{font-size:11px;color:var(--t2)}.map-summary .ms-item b{color:var(--tx);font-size:13px}
+
+
+.rpt-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px}
+.rpt{background:#fff;color:#1a1a2e;border-radius:12px;width:100%;max-width:800px;max-height:92vh;overflow-y:auto;font-family:'DM Sans',sans-serif}
+.rpt-actions{position:sticky;top:0;background:#fff;padding:12px 24px;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center;z-index:1;border-radius:12px 12px 0 0}
+.rpt-actions button{padding:6px 16px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
+.rpt-actions .rpt-print{background:#C49A2A;color:#fff;border:none}
+.rpt-actions .rpt-close{background:transparent;border:1px solid #d1d5db;color:#6b7280}
+.rpt-body{padding:24px 32px}
+.rpt h1{font-family:'Playfair Display',serif;font-size:24px;color:#1B365D;margin-bottom:4px}
+.rpt .rpt-sub{font-size:12px;color:#6b7280;margin-bottom:20px}
+.rpt .rpt-signal{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;margin-bottom:16px}
+.rpt .rpt-signal.green{background:#dcfce7;color:#166534}
+.rpt .rpt-signal.yellow{background:#fef3c7;color:#92400e}
+.rpt .rpt-signal.red{background:#fee2e2;color:#991b1b}
+.rpt h2{font-size:15px;font-weight:700;color:#1B365D;margin:20px 0 10px;padding-bottom:4px;border-bottom:2px solid #C49A2A}
+.rpt h3{font-size:13px;font-weight:600;color:#C49A2A;margin:14px 0 6px}
+.rpt .rpt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:16px}
+.rpt .rpt-kpi{background:#f8fafc;border-radius:8px;padding:12px;text-align:center;border:1px solid #e5e7eb}
+.rpt .rpt-kpi .kv{font-size:28px;font-weight:700;line-height:1}
+.rpt .rpt-kpi .kl{font-size:10px;color:#6b7280;margin-top:2px}
+.rpt .rpt-area{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f1f5f9}
+.rpt .rpt-area .ra-name{flex:1;font-size:12px;font-weight:600}
+.rpt .rpt-area .ra-bar{width:120px;height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden}
+.rpt .rpt-area .ra-fill{height:100%;border-radius:3px}
+.rpt .rpt-area .ra-pct{font-size:12px;font-weight:700;width:40px;text-align:right}
+.rpt .rpt-milestone{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:11px}
+.rpt .rpt-milestone .ms-icon{font-size:14px;flex-shrink:0}
+.rpt .rpt-milestone .ms-txt{flex:1}
+.rpt .rpt-milestone .ms-date{color:#6b7280;flex-shrink:0}
+.rpt .rpt-risk{padding:8px 10px;margin-bottom:6px;border-radius:6px;font-size:11px;line-height:1.4}
+.rpt .rpt-risk.rr{background:#fee2e2;border-left:3px solid #ef4444}
+.rpt .rpt-risk.ry{background:#fef3c7;border-left:3px solid #f59e0b}
+.rpt .rpt-budget{width:100%;border-collapse:collapse;font-size:11px;margin:8px 0}
+.rpt .rpt-budget th{background:#1B365D;color:#fff;padding:6px 10px;text-align:left;font-weight:600}
+.rpt .rpt-budget td{padding:5px 10px;border-bottom:1px solid #e5e7eb}
+.rpt .rpt-budget tr:nth-child(even) td{background:#f8fafc}
+.rpt .rpt-footer{margin-top:24px;padding-top:12px;border-top:1px solid #e5e7eb;font-size:9px;color:#9ca3af;text-align:center}
+@media print{.rpt-bg{position:static;background:none;padding:0}.rpt{max-height:none;box-shadow:none;border-radius:0}.rpt-actions{display:none}}
+
+
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px;margin-top:10px}
+.tm-card{background:var(--cd);border-radius:10px;padding:14px;cursor:pointer;transition:.2s;border:2px solid transparent}
+.tm-card:hover{border-color:var(--bd);transform:translateY(-1px)}
+.tm-card.tm-open{border-color:var(--gd);background:#1a2744}
+.tm-hd{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.tm-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0}
+.tm-info{flex:1;min-width:0}
+.tm-name{font-size:13px;font-weight:700;color:var(--tx)}
+.tm-role{font-size:10px;color:var(--t3)}
+.tm-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.tm-tag{font-size:9px;padding:2px 7px;border-radius:10px;background:var(--sf);color:var(--t2);border:1px solid var(--bd)}
+.tm-tag.dip{border-color:#3b82f6;color:#3b82f6}
+.tm-tag.free{border-color:#8b5cf6;color:#8b5cf6}
+.tm-tag.cons{border-color:#f59e0b;color:#f59e0b}
+.tm-tag.soc{border-color:#22c55e;color:#22c55e}
+.tm-stats{display:flex;gap:12px;font-size:10px;color:var(--t2)}
+.tm-stats b{color:var(--tx)}
+.tm-tasks{margin-top:10px;padding-top:10px;border-top:1px solid var(--bd)}
+.tm-task{display:flex;align-items:center;gap:5px;padding:4px 0;border-bottom:1px solid rgba(51,65,85,.2);font-size:10px}
+.tm-task:last-child{border-bottom:none}
+.tm-task .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.tm-task .tid{font-weight:700;width:24px;flex-shrink:0;color:var(--t2)}
+.tm-task .ttx{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm-task .tdt{color:var(--t3);flex-shrink:0;width:65px;text-align:right;font-size:9px}
+.tm-task select{font-size:8px;font-weight:600;border:none;border-radius:3px;padding:1px 3px;cursor:pointer;outline:none;width:62px;flex-shrink:0;font-family:inherit}
+.tm-task .tgo{color:var(--t3);cursor:pointer;font-size:10px;padding:0 3px;flex-shrink:0}
+.tm-task .tgo:hover{color:var(--gd)}
+.tm-cost{margin-top:8px;padding:8px;background:var(--sf);border-radius:6px;font-size:10px;color:var(--t2)}
+.tm-cost b{color:var(--tx)}
+.tm-actions{display:flex;gap:4px;margin-top:8px}
+.tm-actions button{padding:3px 8px;border-radius:4px;font-size:9px;cursor:pointer;font-family:inherit}
+.tm-edit{background:var(--sf);border:1px solid var(--bd);color:var(--t2)}
+.tm-del{background:transparent;border:1px solid var(--rd);color:var(--rd)}
+.tm-add{background:var(--cd);border:2px dashed var(--bd);border-radius:10px;padding:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:var(--t3);transition:.2s;min-height:100px}
+.tm-add:hover{border-color:var(--gd);color:var(--gd)}
+.tm-modal{background:var(--cd);border-radius:10px;padding:18px;width:100%;max-width:420px;max-height:85vh;overflow-y:auto;border:1px solid var(--bd)}
+.tm-modal h2{font-family:'Playfair Display',serif;font-size:16px;color:var(--gd);margin-bottom:12px}
+.tm-modal .tmf{display:flex;flex-direction:column;gap:7px}
+.tm-modal .tmf label{font-size:10px;color:var(--t2);font-weight:600}
+.tm-modal .tmf input,.tm-modal .tmf select,.tm-modal .tmf textarea{background:var(--sf);border:1px solid var(--bd);border-radius:5px;padding:6px 9px;color:var(--tx);font-size:11px;font-family:inherit;outline:none;width:100%}
+.tm-modal .tmf textarea{min-height:40px;resize:vertical}
+.tm-btns{display:flex;gap:6px;margin-top:12px;justify-content:flex-end}
+.tm-btns button{padding:6px 14px;border-radius:5px;font-size:10px;font-weight:600;font-family:inherit}
+.tm-btns .cancel{background:transparent;border:1px solid var(--bd);color:var(--t2)}
+.tm-btns .save{background:var(--gd);border:none;color:var(--bg)}
+.tm-summary{background:var(--cd);border-radius:10px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.tm-summary .ts-title{font-family:'Playfair Display',serif;font-size:16px;color:var(--gd)}
+.tm-summary .ts-item{font-size:11px;color:var(--t2)}
+.tm-summary .ts-item b{color:var(--tx);font-size:13px}
+
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ===== SECTIONS / STATUSES / WEEKS =====
+const SECS=[
+{id:"ip",l:"Proprietà Intellettuale",i:"🛡️",c:"#C49A2A"},
+{id:"srl",l:"Costituzione SRL",i:"🏛️",c:"#1B365D"},
+{id:"locale",l:"Locale & Impianti",i:"🔧",c:"#8B4513"},
+{id:"auth",l:"Autorizzazioni",i:"📋",c:"#B22222"},
+{id:"insurance",l:"Assicurazioni & Sicurezza",i:"🛡️",c:"#2E8B57"},
+{id:"hr",l:"Risorse Umane",i:"👥",c:"#4169E1"},
+{id:"supply",l:"Forniture & Tech",i:"📦",c:"#6A5ACD"},
+{id:"marketing",l:"Marketing & Lancio",i:"📣",c:"#DB7093"},
+{id:"contracts",l:"Contrattualistica",i:"📝",c:"#008B8B"},
+{id:"ai",l:"Agenti AI & Automazione",i:"🤖",c:"#7C3AED"}];
+const STS=[{v:"todo",l:"Da fare",c:"#94a3b8",bg:"#f1f5f9"},{v:"progress",l:"In corso",c:"#f59e0b",bg:"#fef3c7"},{v:"blocked",l:"Bloccato",c:"#ef4444",bg:"#fee2e2"},{v:"done",l:"Completato",c:"#22c55e",bg:"#dcfce7"}];
+const WKS=[{id:1,l:"Sett. 1",d:"10–16 Mar"},{id:2,l:"Sett. 2",d:"17–23 Mar"},{id:3,l:"Sett. 3",d:"24–30 Mar"},{id:4,l:"Sett. 4",d:"31 Mar–6 Apr"},{id:5,l:"Sett. 5",d:"7–12 Apr"}];
+
+// ===== TASK DATA WITH DESCRIPTIONS =====
+const INIT_TASKS=[
+// === PROPRIETA INTELLETTUALE ===
+{id:"1.1",s:"ip",t:"Completamento ricerca anteriorità",r:"Avvocato IP",d0:"10/03",d1:"13/03",dp:"—",cr:false,w:1,
+desc:"Verificare che il marchio 'Moto Élite Care' (denominativo e figurativo) non sia in conflitto con marchi già registrati o in uso. La ricerca deve coprire banche dati nazionali e internazionali.",
+checks:["Ricerca su banca dati UIBM (marchi nazionali italiani)","Ricerca su TMview (marchi europei e internazionali)","Ricerca su EUIPO (marchi dell'Unione Europea)","Verifica anche varianti fonetiche simili (es. Moto Elite, Elite Moto Care)","Ricerca Google e social per usi non registrati del nome","Relazione scritta dell'avvocato con esito e raccomandazioni"],
+refs:["UIBM banca dati: uibm.mise.gov.it","TMview: tmview.org","EUIPO eSearch: euipo.europa.eu/eSearch"]},
+
+{id:"1.2",s:"ip",t:"Scelta classi di Nizza",r:"Avvocato IP",d0:"10/03",d1:"13/03",dp:"—",cr:false,w:1,
+desc:"Selezionare le classi della Classificazione di Nizza nelle quali registrare il marchio. La scelta deve coprire tutte le attività previste dal business plan, incluse quelle future (franchising).",
+checks:["Classe 37 — manutenzione e riparazione veicoli, lavaggio veicoli","Classe 35 — gestione di affari commerciali, franchising, servizi di vendita al dettaglio","Classe 25 — abbigliamento e merchandising (se previsto)","Classe 41 — organizzazione eventi (valutare se necessaria)","Valutare classe 3 — prodotti per la pulizia (se vendita diretta)","Elenco prodotti/servizi specifico per ogni classe redatto dall'avvocato"],
+refs:["Classificazione di Nizza 2026: wipo.int/classifications/nice","Guida UIBM alle classi: uibm.mise.gov.it"]},
+
+{id:"1.3",s:"ip",t:"Preparazione logo definitivo",r:"Graphic Designer",d0:"10/03",d1:"14/03",dp:"—",cr:false,w:1,
+desc:"Creare la versione definitiva del logo 'Moto Élite Care' che sarà depositata come marchio figurativo. Il file deve essere in formato vettoriale ad alta risoluzione.",
+checks:["Logo in formato vettoriale (AI, SVG, EPS)","Versione a colori, in bianco/nero e negativo","File PNG/JPG ad alta risoluzione (min. 300 DPI) per deposito UIBM","Verifica che il logo non contenga elementi generici non registrabili","Approvazione scritta dei soci fondatori sul design finale","Brand manual minimo: font utilizzati, codici colore esatti (HEX, CMYK, Pantone)"],
+refs:["Requisiti tecnici UIBM per rappresentazione marchio: uibm.mise.gov.it/marchi"]},
+
+{id:"1.4",s:"ip",t:"Deposito domanda UIBM (fast track)",r:"Avvocato IP",d0:"14/03",d1:"14/03",dp:"1.1, 1.2, 1.3",cr:true,w:1,
+desc:"Depositare la domanda di registrazione del marchio presso l'UIBM utilizzando la procedura fast track (tempi ridotti da 180 a 120 giorni). Il deposito deve essere a nome delle DUE PERSONE FISICHE (non della SRL).",
+checks:["Deposito telematico sul portale UIBM (sezione servizi online)","Intestatari: le due persone fisiche socie fondatrici (NON la SRL)","Selezionare procedura 'Fast Track'","Selezionare prodotti/servizi dall'elenco Classificazione di Nizza (obbligatorio per fast track)","Caricare rappresentazione grafica del marchio (file dal task 1.3)","Pagamento contestuale via PagoPA: 101€ per la prima classe + 34€ per ogni classe aggiuntiva + 48€ imposta di bollo","Conservare ricevuta di deposito e numero di domanda"],
+refs:["Portale deposito UIBM: servizionline.uibm.gov.it","Procedura fast track: uibm.mise.gov.it/fast-track","Costi deposito: uibm.mise.gov.it/costi-deposito-nazionale","Art. 15-19 D.Lgs. 30/2005 (Codice Proprietà Industriale)"]},
+
+{id:"1.5",s:"ip",t:"Pagamento tasse deposito",r:"Soci fondatori",d0:"14/03",d1:"14/03",dp:"1.4",cr:false,w:1,
+desc:"Effettuare il pagamento delle tasse di deposito contestualmente alla presentazione della domanda. Il pagamento avviene tramite PagoPA direttamente dal portale UIBM.",
+checks:["Pagamento imposta di bollo: 48€","Pagamento tassa base prima classe: 101€","Pagamento tasse classi aggiuntive: 34€ per ogni classe extra","Pagamento effettuato via PagoPA","Conservare ricevuta di pagamento (PDF)"],
+refs:["Tariffe UIBM aggiornate: uibm.mise.gov.it/costi-deposito-nazionale"]},
+
+{id:"1.6",s:"ip",t:"Conferma ricevuta deposito",r:"Avvocato IP",d0:"14/03",d1:"17/03",dp:"1.5",cr:false,w:1,
+desc:"Ottenere e archiviare la conferma ufficiale del deposito con numero di domanda. Da questo momento il marchio è protetto (priorità dalla data di deposito).",
+checks:["Ricevere conferma telematica dal portale UIBM","Annotare numero di domanda di registrazione","Archiviare ricevuta in formato PDF","Comunicare numero di domanda al PM e ai soci","Nota: si può usare il simbolo ™ (non ® fino alla registrazione definitiva)"],
+refs:["La protezione decorre dalla data di deposito (art. 15 CPI)"]},
+
+{id:"1.7",s:"ip",t:"Registrazione dominio .it e .com",r:"COO / PM",d0:"10/03",d1:"11/03",dp:"—",cr:false,w:1,
+desc:"Registrare i domini internet principali per il brand prima che qualcun altro li occupi. Registrare anche varianti per protezione.",
+checks:["Registrare motoelitecare.it","Registrare motoelitecare.com","Valutare anche: motoelitecare.eu, .net","Valutare varianti senza accento: motoelitecare","Registrare presso un provider affidabile (Aruba, OVH, GoDaddy, Cloudflare)","Intestare i domini ai soci fondatori o alla futura SRL","Attivare rinnovo automatico","Configurare DNS base"],
+refs:["Registro .it: nic.it","Verifica disponibilità: whois.domaintools.com"]},
+
+{id:"1.8",s:"ip",t:"Registrazione account social",r:"COO / PM",d0:"10/03",d1:"11/03",dp:"—",cr:false,w:1,
+desc:"Occupare il nome 'Moto Élite Care' (o variante coerente) su tutte le piattaforme social rilevanti per il target motociclisti premium.",
+checks:["Instagram: @motoelitecare","Facebook: pagina business Moto Élite Care","TikTok: @motoelitecare","LinkedIn: pagina aziendale","YouTube: canale Moto Élite Care","Usare la stessa immagine profilo (logo) su tutti","Compilare bio provvisoria con 'Coming soon' e città Milano","Annotare credenziali in un password manager sicuro (es. 1Password, Bitwarden)"],
+refs:["Usare Business Suite di Meta per gestire FB e IG insieme"]},
+
+{id:"1.9",s:"ip",t:"Attivazione email aziendale",r:"COO / PM",d0:"12/03",d1:"12/03",dp:"1.7",cr:false,w:1,
+desc:"Attivare le caselle email sul dominio aziendale per comunicazioni professionali.",
+checks:["Creare info@motoelitecare.it","Creare eventuali alias: ceo@, booking@, press@","Configurare su Google Workspace o Microsoft 365 (consigliato Google Workspace a 6€/mese/utente)","Testare invio e ricezione","Configurare firma email professionale con logo"],
+refs:["Google Workspace: workspace.google.com","Microsoft 365: microsoft.com/microsoft-365/business"]},
+
+// === COSTITUZIONE SRL ===
+{id:"2.1",s:"srl",t:"Conferma/selezione commercialista",r:"CEO + COO",d0:"10/03",d1:"12/03",dp:"—",cr:true,w:1,
+desc:"Individuare e confermare il commercialista che seguirà la costituzione della SRL e tutti gli adempimenti fiscali/contabili. È il professionista più importante: seguirà la società per anni.",
+checks:["Chiedere ai soci se hanno già un commercialista di fiducia","Se no, cercare uno studio specializzato in PMI/startup a Milano","Verificare che abbia esperienza in: costituzione SRL, regime contabile, fatturazione elettronica","Richiedere preventivo annuo per tenuta contabilità + dichiarazioni","Confermare disponibilità immediata (costituzione entro 20/03)","Firmare lettera di incarico professionale","Il BP prevede 5.000€/anno per il commercialista"],
+refs:["Ordine Dottori Commercialisti Milano: odcec.mi.it","Consiglio: chiedere referenze a imprenditori della propria rete"]},
+
+{id:"2.2",s:"srl",t:"Conferma/selezione avvocato",r:"CEO + COO",d0:"10/03",d1:"12/03",dp:"—",cr:true,w:1,
+desc:"Individuare un avvocato (o studio legale) con doppia competenza: diritto societario e proprietà intellettuale. Servirà per statuto, contratti, marchio e futura struttura franchising.",
+checks:["Verificare competenza in diritto societario (atto costitutivo, patti parasociali)","Verificare competenza in proprietà intellettuale (marchio, licenza)","Esperienza in contrattualistica commerciale","Richiedere preventivo per: deposito marchio + contratto licenza + revisione statuto","Confermare disponibilità immediata","Il BP prevede 3.000€ per consulenza legale avvio"],
+refs:["Ordine Avvocati Milano: ordineavvocatimilano.it","Se necessario, si possono usare due professionisti diversi per IP e societario"]},
+
+{id:"2.3",s:"srl",t:"Selezione notaio",r:"Commercialista",d0:"12/03",d1:"14/03",dp:"2.1",cr:false,w:1,
+desc:"Individuare un notaio a Milano disponibile per la stipula dell'atto costitutivo entro il 19-20 marzo. Il commercialista di solito ha notai di fiducia.",
+checks:["Chiedere al commercialista i suoi notai di riferimento","Richiedere preventivo per atto costitutivo SRL (media 1.500€ + IVA)","Verificare disponibilità per stipula entro 19-20 marzo","Valutare opzione costituzione online (videoconferenza) se più rapida","Confermare appuntamento e comunicare a tutti i soci"],
+refs:["Consiglio Nazionale Notariato — costituzione online: notariato.it/srl-online","Costo medio notaio SRL: 1.500-2.500€ + IVA"]},
+
+{id:"2.4",s:"srl",t:"Definizione oggetto sociale",r:"Avvocato + Comm.",d0:"13/03",d1:"15/03",dp:"2.1, 2.2",cr:false,w:1,
+desc:"Redigere l'oggetto sociale della SRL in modo sufficientemente ampio da coprire tutte le attività previste nel business plan, attuali e future, senza dover modificare lo statuto in seguito.",
+checks:["Lavaggio, pulizia e detailing di motocicli e veicoli a motore","Vendita al dettaglio e all'ingrosso di prodotti per la cura dei veicoli","Vendita di abbigliamento e merchandising","Commercio elettronico (e-commerce)","Organizzazione di eventi, raduni e manifestazioni","Noleggio di veicoli e mezzi di micro-mobilità","Servizi fotografici","Gestione e concessione in franchising del proprio format commerciale","Attività di holding e gestione partecipazioni (per futura holding)","Revisione da parte dell'avvocato per correttezza giuridica"],
+refs:["Art. 2463 c.c. — Contenuto dell'atto costitutivo SRL","Verificare codici ATECO corrispondenti con il commercialista"]},
+
+{id:"2.5",s:"srl",t:"Redazione atto costitutivo e statuto",r:"Notaio",d0:"15/03",d1:"18/03",dp:"2.4",cr:false,w:2,
+desc:"Il notaio redige la bozza dell'atto costitutivo e dello statuto sociale. Questi documenti definiscono le regole di funzionamento della società.",
+checks:["Atto costitutivo con: denominazione, sede, oggetto sociale, capitale, quote soci, organi","Statuto con clausole su: assemblea, amministrazione, trasferimento quote","Capitale sociale: 10.000€ come da business plan","Quote: definire ripartizione tra i 2 soci (50/50 o altra)","Organo amministrativo: definire se amministratore unico o CdA","Eventuali clausole di prelazione e gradimento per cessione quote","Clausole sulla distribuzione utili","Bozza inviata ai soci e all'avvocato per revisione"],
+refs:["Art. 2463 c.c. — Atto costitutivo SRL","Art. 2475 c.c. — Amministrazione SRL"]},
+
+{id:"2.6",s:"srl",t:"Revisione clausole statutarie",r:"Avvocato",d0:"18/03",d1:"19/03",dp:"2.5",cr:false,w:2,
+desc:"L'avvocato verifica che lo statuto tuteli adeguatamente gli interessi di entrambi i soci, con particolare attenzione a governance, uscita soci e protezione del brand.",
+checks:["Clausola di prelazione su cessione quote","Clausola di lock-up (divieto cessione per X anni)","Clausola di drag-along e tag-along (se appropriato)","Clausola su dead-lock (stallo decisionale) — importante con 2 soci","Poteri dell'amministratore e limiti","Clausole su recesso e esclusione del socio","Conferma scritta dell'avvocato che lo statuto è adeguato","Eventuali patti parasociali separati"],
+refs:["Art. 2469 c.c. — Trasferimento quote SRL","Art. 2473 c.c. — Recesso del socio"]},
+
+{id:"2.7",s:"srl",t:"Apertura c/c versamento capitale",r:"CEO",d0:"13/03",d1:"17/03",dp:"—",cr:false,w:1,
+desc:"Aprire un conto corrente (intestato al futuro amministratore o conto fiduciario del notaio) per versare il capitale sociale prima della stipula.",
+checks:["Contattare banca di fiducia o il notaio per conto fiduciario","Aprire c/c intestato al futuro amministratore (CEO)","Oppure: il notaio indica il suo conto fiduciario per il versamento","Ottenere dalla banca attestazione di avvenuto versamento","Comunicare IBAN e dettagli al notaio"],
+refs:["Art. 2464 c.c. — Versamento capitale sociale","Il versamento minimo alla costituzione è del 25% (2.500€ su 10.000€)"]},
+
+{id:"2.8",s:"srl",t:"Versamento 25% capitale (2.500€)",r:"Soci fondatori",d0:"17/03",d1:"18/03",dp:"2.7",cr:true,w:2,
+desc:"Ciascun socio versa la propria quota di capitale sociale (almeno il 25% del totale = 2.500€ su 10.000€). Il bonifico deve avere causale specifica.",
+checks:["Bonifico dal conto personale di ciascun socio","Causale: 'Versamento capitale sociale costituenda [nome SRL]'","Importo minimo: 25% del capitale sottoscritto da ciascun socio","Ottenere contabile bancaria con data valuta","Consegnare documentazione al notaio prima dell'atto","Nota: il restante 75% può essere versato su richiamo dell'amministratore"],
+refs:["Art. 2464, comma 4, c.c."]},
+
+{id:"2.9",s:"srl",t:"Stipula atto costitutivo dal notaio",r:"Soci + Notaio",d0:"19/03",d1:"20/03",dp:"2.5, 2.6, 2.8",cr:true,w:2,
+desc:"Appuntamento dal notaio per la firma dell'atto costitutivo e dello statuto. I soci devono presentarsi con documenti validi. Da questo momento la società esiste.",
+checks:["Entrambi i soci presenti (o videoconferenza se procedura online)","Documenti: carta d'identità valida + codice fiscale di entrambi i soci","Attestazione di versamento del capitale sociale","Firma atto costitutivo e statuto","Nomina del primo amministratore (CEO)","Conferimento poteri all'amministratore","Il notaio procede all'iscrizione al Registro Imprese","Ritirare copia autentica dell'atto"],
+refs:["Art. 2330 c.c. — Deposito atto al Registro Imprese (entro 10gg)","D.Lgs. 183/2021 — Costituzione online"]},
+
+{id:"2.10",s:"srl",t:"Iscrizione Registro Imprese",r:"Notaio",d0:"20/03",d1:"21/03",dp:"2.9",cr:true,w:2,
+desc:"Il notaio deposita l'atto costitutivo presso il Registro Imprese della Camera di Commercio di Milano. La società acquista personalità giuridica con l'iscrizione.",
+checks:["Deposito telematico da parte del notaio (pratica ComUnica)","Pagamento imposta di registro: 200€","Pagamento diritti di segreteria: 90€","Pagamento imposta di bollo: 156€","Attesa conferma iscrizione (di solito 1-3 giorni lavorativi)","Ottenere visura camerale aggiornata","La società ha personalità giuridica dal momento dell'iscrizione"],
+refs:["Art. 2331 c.c. — Effetti dell'iscrizione","Camera di Commercio Milano: milomb.camcom.it"]},
+
+{id:"2.11",s:"srl",t:"Attribuzione P.IVA e CF (ComUnica)",r:"Commercialista",d0:"21/03",d1:"22/03",dp:"2.10",cr:true,w:2,
+desc:"Tramite la pratica ComUnica, il commercialista richiede simultaneamente P.IVA, Codice Fiscale, iscrizione INPS e INAIL. È una comunicazione unica a più enti.",
+checks:["Invio pratica ComUnica telematica","Richiesta Partita IVA all'Agenzia delle Entrate","Attribuzione Codice Fiscale","Scelta codice ATECO principale: 45.20.91 (lavaggio autoveicoli)","Comunicazione inizio attività","Scelta regime contabile (ordinario per SRL)","Conservare certificato di attribuzione P.IVA"],
+refs:["Piattaforma ComUnica: registroimprese.it","Codice ATECO 45.20.91: Lavaggio e pulitura di autoveicoli"]},
+
+{id:"2.12",s:"srl",t:"Codice ATECO 45.20.91",r:"Commercialista",d0:"21/03",d1:"22/03",dp:"2.10",cr:false,w:2,
+desc:"Confermare la scelta del codice ATECO principale e dei codici secondari che coprono tutte le attività del business plan.",
+checks:["Codice primario: 45.20.91 — Lavaggio e pulitura di autoveicoli","Codice secondario: 47.30 — Commercio al dettaglio carburanti/lubrificanti (per prodotti cura)","Codice secondario: 47.91 — Commercio al dettaglio via internet (e-commerce)","Codice secondario: 82.30 — Organizzazione convegni e fiere (eventi)","Codice secondario: 74.20 — Attività fotografiche (servizio HD)","Verificare con il commercialista la completezza"],
+refs:["Classificazione ATECO 2007 aggiornata: istat.it/classificazioni"]},
+
+{id:"2.13",s:"srl",t:"PEC societaria",r:"Commercialista",d0:"21/03",d1:"22/03",dp:"2.10",cr:false,w:2,
+desc:"Attivare la Posta Elettronica Certificata (PEC) della società, obbligatoria per tutte le imprese iscritte al Registro Imprese.",
+checks:["Scegliere provider PEC (Aruba, Legalmail, Register)","Indirizzo consigliato: motoelitecare@pec.it o simile","Comunicare indirizzo PEC alla Camera di Commercio","Costo: circa 5-25€/anno","Conservare credenziali di accesso"],
+refs:["Art. 16 D.L. 185/2008 — Obbligo PEC per imprese","La PEC va comunicata entro 30gg dall'iscrizione"]},
+
+{id:"2.14",s:"srl",t:"Iscrizione INPS",r:"Commercialista",d0:"22/03",d1:"24/03",dp:"2.11",cr:false,w:2,
+desc:"Iscrizione della posizione aziendale INPS per la gestione contributiva dei dipendenti.",
+checks:["Iscrizione tramite ComUnica o direttamente su portale INPS","Apertura posizione contributiva aziendale","Gestione: Commercianti o Artigiani (in base all'iscrizione Albo)","Comunicare matricola INPS al consulente del lavoro"],
+refs:["Portale INPS aziende: inps.it"]},
+
+{id:"2.15",s:"srl",t:"Iscrizione INAIL",r:"Commercialista",d0:"22/03",d1:"24/03",dp:"2.11",cr:false,w:2,
+desc:"Iscrizione all'INAIL per l'assicurazione obbligatoria contro infortuni e malattie professionali.",
+checks:["Iscrizione tramite ComUnica o portale INAIL","Indicare voce di tariffa corretta per l'attività (autolavaggio)","Comunicare posizione assicurativa INAIL al consulente del lavoro","Nota: l'iscrizione deve avvenire PRIMA dell'assunzione dei dipendenti"],
+refs:["Portale INAIL: inail.it"]},
+
+{id:"2.16",s:"srl",t:"Iscrizione Albo Artigiani",r:"Commercialista",d0:"22/03",d1:"25/03",dp:"2.11",cr:false,w:3,
+desc:"L'attività di autolavaggio è classificata come artigianale. La SRL deve iscriversi all'Albo delle Imprese Artigiane presso la Camera di Commercio di Milano.",
+checks:["Verifica requisiti: maggioranza soci svolge lavoro manuale","Presentazione domanda iscrizione Albo Artigiani CCIAA Milano","Requisiti per SRL artigiana: maggioranza soci lavora in azienda, detiene maggioranza capitale, è maggioranza in organi deliberanti","Pagamento diritti camerali","Ottenere certificato iscrizione Albo Artigiani"],
+refs:["L. 443/1985 — Legge Quadro Artigianato","Art. 3-4 L. 443/85 — Requisiti impresa artigiana","CCIAA Milano: milomb.camcom.it"]},
+
+{id:"2.17",s:"srl",t:"Apertura c/c societario",r:"CEO",d0:"22/03",d1:"25/03",dp:"2.11",cr:false,w:2,
+desc:"Aprire il conto corrente intestato alla SRL per la gestione operativa. Serve la documentazione societaria completa.",
+checks:["Portare in banca: visura camerale, atto costitutivo, statuto, P.IVA","Aprire c/c business intestato alla SRL","Valutare: Banca Sella, Intesa, UniCredit, o fintech (Qonto, Tot)","Richiedere home banking e carta di debito aziendale","Attivare servizio di addebito F24 per pagamento imposte","Comunicare IBAN al commercialista e ai fornitori"],
+refs:["Consiglio: Qonto o Tot per startup (apertura veloce, costi trasparenti)"]},
+
+{id:"2.18",s:"srl",t:"Firma digitale amministratore",r:"CEO",d0:"22/03",d1:"24/03",dp:"2.10",cr:false,w:2,
+desc:"Ottenere la firma digitale per l'amministratore (CEO), necessaria per le pratiche telematiche con PA e Camera di Commercio.",
+checks:["Richiedere firma digitale presso provider accreditato (Aruba, InfoCert, Poste)","Costo: circa 30-70€","Procedura di riconoscimento (online o in ufficio postale)","Attivare e testare la firma","Necessaria per: SUAP, ComUnica, fatturazione elettronica"],
+refs:["Provider firma digitale: firma.infocert.it, pec.it, postecert.poste.it"]},
+
+{id:"2.19",s:"srl",t:"Registrazione SUAP",r:"Commercialista",d0:"22/03",d1:"24/03",dp:"2.11",cr:false,w:2,
+desc:"Registrare la società sul portale Impresainungiorno.gov.it per poter presentare la SCIA e le altre pratiche al SUAP di Milano.",
+checks:["Accesso con SPID o CNS dell'amministratore","Registrazione impresa sul portale","Verifica dati anagrafici e sede legale","Testare accesso e funzionalità del portale"],
+refs:["Portale SUAP: impresainungiorno.gov.it","SUAP Milano: fareimpresa.comune.milano.it"]},
+
+{id:"2.20",s:"srl",t:"Contratto licenza marchio (soci→SRL)",r:"Avvocato",d0:"21/03",d1:"25/03",dp:"2.10, 1.6",cr:true,w:2,
+desc:"Redigere il contratto con cui i soci fondatori (titolari del marchio) concedono alla SRL il diritto di utilizzare il marchio 'Moto Élite Care'. Questo è strategico: il marchio resta proprietà dei soci.",
+checks:["Licenza d'uso esclusiva (la SRL è l'unica a poterlo usare)","Durata: definire (es. 10 anni con rinnovo automatico)","Territorio: Italia (o Europa se si prevede espansione)","Canone (royalty): definire importo o percentuale sul fatturato","Clausole di qualità: la SRL deve mantenere standard qualitativi","Clausole di risoluzione: in caso di cessazione attività o inadempimento","Obblighi di protezione del marchio da parte del licenziatario","Allineamento con il commercialista per trattamento fiscale delle royalty"],
+refs:["Art. 23 D.Lgs. 30/2005 (CPI) — Licenza di marchio","Art. 2573 c.c. — Trasferimento del marchio","La royalty è un costo deducibile per la SRL e un reddito per i soci"]},
+
+{id:"2.21",s:"srl",t:"Definizione royalty",r:"Avv. + Comm.",d0:"25/03",d1:"26/03",dp:"2.20",cr:false,w:3,
+desc:"Definire l'importo o la percentuale delle royalty che la SRL paga ai soci per l'uso del marchio. Deve essere a valore di mercato per evitare contestazioni fiscali.",
+checks:["Richiedere al commercialista analisi fiscale: impatto su IRES/IRAP della SRL","Richiedere analisi tassazione in capo ai soci (redditi diversi o d'impresa)","Definire importo coerente con il mercato (transfer pricing)","Documentare la ragionevolezza dell'importo","Formalizzare nel contratto di licenza"],
+refs:["Art. 110 TUIR — Prezzi di trasferimento","Circolare AdE 32/E/1980 sul trattamento fiscale royalty"]},
+
+{id:"2.22",s:"srl",t:"Firma licenza e registrazione UIBM",r:"Soci + Avvocato",d0:"26/03",d1:"28/03",dp:"2.21",cr:true,w:3,
+desc:"Firmare il contratto di licenza e registrarlo/annotarlo presso l'UIBM per renderlo opponibile ai terzi.",
+checks:["Firma del contratto da parte di tutti i soci e della SRL (rappresentata dall'amministratore)","Data certa (PEC, bollo, o autenticazione firme)","Annotazione/trascrizione della licenza presso UIBM","Pagamento tasse di trascrizione","Archiviazione copie originali (soci + SRL + avvocato)"],
+refs:["Art. 138-139 CPI — Trascrizione dei diritti di proprietà industriale","Portale UIBM per trascrizioni"]},
+
+// === LOCALE & IMPIANTI ===
+{id:"3.1",s:"locale",t:"Sopralluogo tecnico locale",r:"PM + Tecnico",d0:"11/03",d1:"12/03",dp:"—",cr:true,w:1,
+desc:"Sopralluogo del locale con un tecnico qualificato (geometra o ingegnere) per valutare lo stato attuale e gli interventi necessari per adibire lo spazio a centro lavaggio moto premium.",
+checks:["Individuare geometra/ingegnere con esperienza in locali commerciali/artigianali","Sopralluogo fisico del locale","Fotografare ogni ambiente e impianto esistente","Verificare: stato strutturale, impianto idrico, scarichi, elettrico, ventilazione","Verificare presenza di eventuale precedente autorizzazione ambientale del locale","Misurare superfici e altezze","Identificare punti di allaccio acqua, scarico fognatura, quadro elettrico","Nota: portare copia del contratto di locazione per verificare clausole su lavori"],
+refs:["Ordine Ingegneri Milano: ordineingegneri.milano.it","Ordine Geometri Milano: geometri.mi.it"]},
+
+{id:"3.2",s:"locale",t:"Verifica destinazione d'uso",r:"Geometra",d0:"11/03",d1:"13/03",dp:"—",cr:true,w:1,
+desc:"Verificare che la destinazione d'uso catastale e urbanistica del locale sia compatibile con l'attività di autolavaggio moto (attività artigianale).",
+checks:["Richiedere visura catastale aggiornata","Verificare categoria catastale (deve essere C/3 — laboratorio artigianale, o C/1 commerciale con possibilità di cambio)","Verificare destinazione d'uso nel PGT (Piano di Governo del Territorio) di Milano","Se non compatibile: valutare richiesta di cambio d'uso (attenzione: tempi lunghi!)","Verificare assenza di vincoli paesaggistici o architettonici (centro Milano)","Verificare regolamento condominiale se in edificio condiviso"],
+refs:["Portale SIT Comune di Milano: sit.comune.milano.it (PGT e urbanistica)","Catasto: sister.agenziaentrate.gov.it"]},
+
+{id:"3.3",s:"locale",t:"Verifica impianto idrico e scarichi",r:"Idraulico spec.",d0:"12/03",d1:"13/03",dp:"3.1",cr:true,w:1,
+desc:"Verificare lo stato dell'impianto idrico esistente e degli scarichi. Per un centro lavaggio servono: punti acqua ad alta pressione, sistema di raccolta acque reflue e collegamento alla fognatura.",
+checks:["Verifica portata dell'allaccio idrico (litri/minuto)","Verifica diametro tubazioni esistenti","Verifica punti di scarico e collegamento alla fognatura pubblica","Verifica presenza/assenza di pozzetti di raccolta e ispezione","Verifica stato delle tubazioni (corrosione, perdite)","Valutazione della necessità di potenziamento dell'allaccio","Identificazione del punto ottimale per installare il depuratore","Relazione tecnica con raccomandazioni"],
+refs:["D.Lgs. 152/2006 — Norme sulle acque reflue","Gestore rete idrica Milano: gruppocap.it"]},
+
+{id:"3.4",s:"locale",t:"Verifica impianto elettrico",r:"Elettricista",d0:"12/03",d1:"13/03",dp:"3.1",cr:false,w:1,
+desc:"Verificare la conformità e la capacità dell'impianto elettrico esistente rispetto alle esigenze di un centro lavaggio (idropulitrici, aspiratori, illuminazione, POS).",
+checks:["Verifica potenza contatore (kW disponibili vs necessari)","Verifica stato quadro elettrico e differenziali","Verifica conformità DM 37/08 (ex L. 46/90)","Verifica messa a terra","Valutazione necessità di potenziamento contatore","Identificazione punti presa necessari per attrezzature","Classificazione zone a rischio (presenza acqua)","Relazione tecnica"],
+refs:["DM 37/2008 — Regolamento sicurezza impianti","CEI 64-8 — Norma impianti elettrici"]},
+
+{id:"3.5",s:"locale",t:"Verifica separatore oli/grassi",r:"Idraulico spec.",d0:"12/03",d1:"13/03",dp:"3.1",cr:true,w:1,
+desc:"Verificare se esiste già un sistema di separazione oli e grassi (dissabbiatore/disoleatore). Se non presente, è OBBLIGATORIO installarlo prima di poter operare.",
+checks:["Verificare presenza di dissabbiatore esistente","Verificare presenza di disoleatore/separatore oli","Se assenti: dimensionare l'impianto necessario in base ai volumi d'acqua previsti","Verificare spazio disponibile per installazione (interrato o fuori terra)","Verificare normativa locale su trattamento acque reflue industriali","Nota: senza separatore non si può ottenere l'AUA né operare legalmente"],
+refs:["D.Lgs. 152/2006, allegato 5, tabella 3 — Limiti scarichi industriali","EN 858 — Norma europea separatori oli","Cassazione 51889/2016 — Acque autolavaggio = industriali"]},
+
+{id:"3.6",s:"locale",t:"Rilievo planimetrico",r:"Geometra",d0:"12/03",d1:"13/03",dp:"3.1",cr:false,w:1,
+desc:"Eseguire un rilievo planimetrico accurato del locale per produrre le planimetrie necessarie per le pratiche autorizzative e il progetto di allestimento.",
+checks:["Rilievo con metro laser o strumentazione topografica","Planimetria in scala 1:50 o 1:100","Indicare: muri, aperture, pilastri, punti acqua, scarichi, quadri elettrici","Indicare altezze interne","Produrre file DWG/PDF","Servirà per: SCIA, AUA, progetto allestimento, VVF"],
+refs:["Le planimetrie devono essere firmate da tecnico abilitato"]},
+
+{id:"3.7",s:"locale",t:"Relazione tecnica interventi",r:"Geometra",d0:"13/03",d1:"14/03",dp:"3.1–3.6",cr:true,w:1,
+desc:"Il geometra/ingegnere produce una relazione tecnica completa che elenca tutti gli interventi necessari, la tempistica stimata e i costi previsti.",
+checks:["Elenco interventi necessari suddiviso per: idraulica, elettrica, edile, impiantistica","Stima tempi di esecuzione per ogni intervento","Stima costi per ogni intervento","Indicazione della tipologia di titolo edilizio necessario (CILA, SCIA, permesso)","Indicazione delle priorità (cosa fare prima)","Identificazione del percorso critico (quali lavori bloccano altri)","Consegna relazione al PM e ai soci per approvazione budget","Nota: il BP prevede 15.000€ per manutenzione straordinaria primo centro"],
+refs:["D.P.R. 380/2001 — Testo Unico Edilizia"]},
+
+{id:"3.14",s:"locale",t:"CILA/SCIA edilizia",r:"Geometra",d0:"15/03",d1:"17/03",dp:"3.7",cr:false,w:1,
+desc:"Presentare il titolo edilizio necessario al Comune di Milano per autorizzare i lavori di adeguamento del locale.",
+checks:["CILA (Comunicazione Inizio Lavori Asseverata): per manutenzione ordinaria, impiantistica interna senza modifiche strutturali","SCIA edilizia: se i lavori sono più invasivi (manutenzione straordinaria)","Allegare: planimetria stato attuale e di progetto, relazione tecnica","Pagamento diritti di segreteria e contributo di costruzione (se dovuto)","La CILA consente inizio lavori immediato; la SCIA dopo 30 giorni (ma spesso si inizia subito con asseverazione)","Presentazione telematica al Comune di Milano"],
+refs:["D.P.R. 380/2001, art. 6-bis (CILA) e art. 22 (SCIA)","Portale edilizia Comune Milano: comune.milano.it/edilizia"]},
+
+{id:"3.15",s:"locale",t:"Impianto depurazione acque",r:"Ditta idraulica",d0:"18/03",d1:"28/03",dp:"3.9, 3.14",cr:true,w:2,
+desc:"Installare il sistema completo di trattamento acque reflue: dissabbiatore → disoleatore → sistema di filtrazione/flocculazione → scarico in fognatura.",
+checks:["Installazione dissabbiatore (rimozione sabbia e particolato)","Installazione disoleatore/separatore idrocarburi (norma EN 858)","Eventuale sistema di flocculazione e filtrazione","Collegamento all'uscita fognatura con pozzetto di campionamento","Installazione pozzetto di ispezione per controlli ARPA","Allaccio al punto di scarico fognario","Test di funzionamento","Rilascio documentazione tecnica e certificazioni","Nota: il dimensionamento deve essere coerente con il progetto dell'AUA (task 3.9)"],
+refs:["EN 858-1 e EN 858-2 — Separatori idrocarburi","D.Lgs. 152/2006 — Limiti scarico acque industriali"]},
+
+{id:"3.16",s:"locale",t:"Adeguamento impianto idrico",r:"Ditta idraulica",d0:"18/03",d1:"28/03",dp:"3.14",cr:false,w:2,
+desc:"Installare l'impianto idrico necessario per le postazioni di lavaggio: punti acqua calda/fredda, sistema alta pressione, eventuale sistema di recupero acqua.",
+checks:["Installazione punti acqua per postazioni lavaggio (caldo + freddo)","Predisposizione attacchi per idropulitrici professionali","Eventuale sistema di recupero e ricircolo acqua (risparmio idrico)","Rubinetteria e raccordi professionali","Valvola di non ritorno sull'allaccio principale","Test pressione e portata","Certificazione impianto (DM 37/08)"],
+refs:["DM 37/2008 — Impianti idrico-sanitari"]},
+
+{id:"3.17",s:"locale",t:"Adeguamento elettrico + DM 37/08",r:"Elettricista cert.",d0:"18/03",d1:"25/03",dp:"3.14",cr:false,w:2,
+desc:"Adeguare l'impianto elettrico alle esigenze del centro lavaggio, con particolare attenzione alle zone con presenza d'acqua.",
+checks:["Eventuale potenziamento contatore (richiedere a distributore)","Installazione quadro elettrico adeguato con differenziali da 30mA","Circuiti dedicati per idropulitrici e aspiratori (alta potenza)","Prese a tenuta stagna nelle zone lavaggio (grado IP minimo IP44)","Illuminazione professionale LED (alta resa cromatica per servizio fotografico)","Impianto di messa a terra","Rilascio Dichiarazione di Conformità (DiCo) ex DM 37/08","Allegato obbligatorio alla SCIA"],
+refs:["DM 37/2008 — Sicurezza impianti","CEI 64-8 — Impianti elettrici, sezione ambienti con acqua"]},
+
+{id:"3.18",s:"locale",t:"Pavimentazione antisdrucciolo",r:"Ditta edile",d0:"20/03",d1:"30/03",dp:"3.14",cr:false,w:2,
+desc:"Realizzare una pavimentazione adeguata per un centro lavaggio: impermeabile, antisdrucciolo, con pendenze verso griglie di raccolta acque.",
+checks:["Pavimento in resina epossidica o gres porcellanato antiscivolo (classe R11 minimo)","Pendenze verso griglie/canaline di raccolta (min. 1-2%)","Installazione griglie e canaline di raccolta in acciaio inox","Collegamento canaline al sistema di depurazione","Impermeabilizzazione sottostante per evitare infiltrazioni","Trattamento giunti e fughe con sigillante impermeabile"],
+refs:["DIN 51130 — Classificazione antiscivolo pavimenti","Norma UNI EN 13501 — Classificazione resistenza"]},
+
+{id:"3.19",s:"locale",t:"Illuminazione professionale",r:"Elettricista",d0:"25/03",d1:"30/03",dp:"3.17",cr:false,w:3,
+desc:"Installare un sistema di illuminazione professionale che valorizzi il servizio e sia adeguato per il servizio fotografico HD offerto ai clienti.",
+checks:["LED ad alta resa cromatica (CRI > 90) nelle zone lavaggio","Illuminazione diffusa nell'area accoglienza","Faretti direzionali per esposizione prodotti","Illuminazione esterna insegna e ingresso","Calcolo illuminotecnico per garantire min. 500 lux nelle aree lavoro","Comandi separati per zone diverse"],
+refs:["UNI EN 12464-1 — Illuminazione ambienti di lavoro"]},
+
+{id:"3.20",s:"locale",t:"Insegna esterna",r:"Ditta insegne",d0:"25/03",d1:"05/04",dp:"3.14",cr:false,w:3,
+desc:"Progettare, produrre e installare l'insegna esterna del centro. Serve autorizzazione comunale.",
+checks:["Design insegna coerente con brand identity (task 7.1)","Insegna luminosa a LED (retroilluminata o a cassonetto)","Dimensioni conformi al regolamento comunale","Richiesta autorizzazione al Comune (task 3.23)","Installazione da parte di ditta specializzata","Allaccio elettrico con contatore dedicato o integrato"],
+refs:["Regolamento insegne Comune Milano","Piano Regolatore Illuminazione Comunale (PRIC)"]},
+
+{id:"3.21",s:"locale",t:"Allestimento interno",r:"Interior designer",d0:"28/03",d1:"05/04",dp:"3.18",cr:false,w:3,
+desc:"Allestire gli spazi interni con un design premium coerente con il posizionamento luxury del brand: area accoglienza, reception, esposizione prodotti, area attesa.",
+checks:["Area reception con desk brandizzato","Area attesa clienti con sedute premium","Esposizione prodotti e merchandising","Segnaletica interna brandizzata","Monitor/TV per contenuti promozionali","Profumazione ambiente","Decorazioni a tema moto (poster, elementi design)","Area operativa organizzata con scaffalature per prodotti e attrezzature"],
+refs:["Coerenza con brand guidelines (task 7.1)","Budget: parte dei 15.000€ manutenzione straordinaria BP"]},
+
+{id:"3.22",s:"locale",t:"HVAC / ventilazione",r:"Ditta impianti",d0:"20/03",d1:"30/03",dp:"3.14",cr:false,w:2,
+desc:"Installare un sistema di ventilazione/aspirazione adeguato per un ambiente dove si usano prodotti chimici e acqua ad alta pressione.",
+checks:["Sistema di aspirazione/ricambio aria nella zona lavaggio","Eventuale sistema di riscaldamento/raffrescamento area accoglienza","Estrattore per vapori e umidità","Filtri adeguati se emissioni in atmosfera","Dimensionamento in base alla cubatura e al tipo di attività","Certificazione impianto"],
+refs:["D.Lgs. 81/2008 — Requisiti ambienti di lavoro (microclima)","D.Lgs. 152/2006, art. 269 — Emissioni in atmosfera"]},
+
+{id:"3.24",s:"locale",t:"Conformità impianti DM 37/08",r:"Ditte installatrici",d0:"30/03",d1:"02/04",dp:"3.15–3.17",cr:true,w:4,
+desc:"Al termine dei lavori, ogni ditta deve rilasciare la Dichiarazione di Conformità (DiCo) degli impianti installati. Questi documenti sono OBBLIGATORI per la SCIA.",
+checks:["DiCo impianto elettrico (elettricista abilitato)","DiCo impianto idrico-sanitario (idraulico abilitato)","DiCo impianto termico/HVAC se installato","Ogni DiCo deve includere: relazione tecnica, schema impianto, riferimenti normativi","Verificare che ogni DiCo sia firmata da tecnico abilitato e iscritto alla CCIAA","Archiviare tutti gli originali — servono per la SCIA"],
+refs:["DM 37/2008 — Art. 7 — Dichiarazione di conformità","Allegato I DM 37/08 — Modello DiCo"]},
+
+// === AUTORIZZAZIONI ===
+{id:"3.8",s:"auth",t:"Incarico tecnico ambientale AUA",r:"PM",d0:"13/03",d1:"14/03",dp:"3.7",cr:true,w:1,
+desc:"Individuare e incaricare un tecnico ambientale (ingegnere o perito industriale specializzato) per preparare e seguire tutta la pratica di Autorizzazione Unica Ambientale.",
+checks:["Cercare tecnico con esperienza in AUA per autolavaggi nella zona Milano","Richiedere preventivo per: progetto depurazione + pratica AUA + valutazione acustica","Confermare disponibilità immediata (è il collo di bottiglia del progetto)","Firmare incarico professionale","Il tecnico deve coordinare con l'idraulico per il dimensionamento dell'impianto","PRIORITÀ MASSIMA: l'AUA è il rischio più grande del progetto"],
+refs:["D.P.R. 59/2013 — Autorizzazione Unica Ambientale","Città Metropolitana Milano — Ufficio AUA"]},
+
+{id:"3.9",s:"auth",t:"Progetto impianto depurazione",r:"Tecnico ambientale",d0:"14/03",d1:"18/03",dp:"3.8",cr:true,w:1,
+desc:"Progettare il sistema completo di trattamento delle acque reflue industriali, dimensionato per i volumi previsti dal business plan (fino a 20 lavaggi/giorno).",
+checks:["Calcolo portata: stima litri/giorno basata su 20 lavaggi/giorno × litri per lavaggio","Schema di processo: dissabbiatore → disoleatore → filtrazione → pozzetto campionamento → fognatura","Dimensionamento componenti in base alla portata","Scelta dei materiali e dei fornitori","Verifica che lo scarico rispetti i limiti Tabella 3 Allegato 5 D.Lgs. 152/06","Relazione tecnica firmata da professionista abilitato","Tavole progettuali (piante, sezioni, schemi)","Questo progetto è allegato obbligatorio dell'istanza AUA"],
+refs:["D.Lgs. 152/2006, allegato 5, tabella 3","EN 858 — Separatori idrocarburi","Regolamento del servizio idrico integrato — Gruppo CAP"]},
+
+{id:"3.10",s:"auth",t:"Valutazione impatto acustico",r:"Tecnico acustico",d0:"14/03",d1:"18/03",dp:"3.8",cr:false,w:1,
+desc:"Produrre la valutazione previsionale di impatto acustico, documento obbligatorio per l'AUA. Stima il rumore prodotto dall'attività e verifica il rispetto dei limiti.",
+checks:["Rilievo fonometrico dello stato attuale (rumore di fondo)","Stima dei livelli sonori prodotti dall'attività (idropulitrici, aspiratori, compressori)","Verifica rispetto limiti zonizzazione acustica del Comune di Milano","Eventuale previsione di misure di mitigazione (pannelli fonoassorbenti, orari)","Relazione firmata da tecnico competente in acustica (art. 2 L. 447/1995)","Documento allegato all'istanza AUA"],
+refs:["L. 447/1995 — Legge quadro inquinamento acustico","DPCM 14/11/1997 — Limiti emissioni acustiche","Zonizzazione acustica Comune Milano: comune.milano.it"]},
+
+{id:"3.11",s:"auth",t:"Valutazione emissioni atmosfera",r:"Tecnico ambientale",d0:"14/03",d1:"18/03",dp:"3.8",cr:false,w:1,
+desc:"Valutare se l'attività produce emissioni in atmosfera (vapori, nebulizzazione prodotti chimici) e se necessita di autorizzazione specifica.",
+checks:["Identificare fonti di emissione: nebulizzazione da idropulitrici, vapori prodotti chimici","Valutare se rientrano tra emissioni 'diffuse' o 'convogliate'","Se convogliate: dimensionare sistema di captazione e abbattimento","Nella maggior parte degli autolavaggi a mano: emissioni trascurabili/diffuse","Relazione tecnica con conclusioni","Se necessario: autorizzazione ex art. 269 D.Lgs. 152/06 (inclusa in AUA)"],
+refs:["D.Lgs. 152/2006, parte V — Emissioni in atmosfera","Art. 272 — Attività in deroga"]},
+
+{id:"3.12",s:"auth",t:"Istanza AUA al SUAP",r:"Tecnico + Comm.",d0:"22/03",d1:"25/03",dp:"2.11, 3.9–3.11",cr:true,w:3,
+desc:"Presentare formalmente l'istanza di Autorizzazione Unica Ambientale al SUAP di Milano, che la trasmetterà alla Città Metropolitana per il rilascio.",
+checks:["Compilazione modulo AUA su portale Impresainungiorno.gov.it","Allegare: progetto impianto depurazione (task 3.9)","Allegare: valutazione impatto acustico (task 3.10)","Allegare: valutazione emissioni atmosfera (task 3.11)","Allegare: planimetrie del locale con indicazione impianti","Allegare: visura camerale della SRL","Pagamento diritti SUAP e oneri AUA","Ricevuta di presentazione con numero di protocollo","ATTENZIONE: termine ordinario rilascio = 90gg. Presentare documentazione PERFETTA per evitare richieste di integrazione che allungano i tempi"],
+refs:["D.P.R. 59/2013 — AUA","Portale: impresainungiorno.gov.it","Città Metropolitana Milano — procedura AUA: cittametropolitana.mi.it"]},
+
+{id:"3.13",s:"auth",t:"Follow-up SUAP per AUA",r:"PM + Tecnico",d0:"25/03",d1:"12/04",dp:"3.12",cr:true,w:3,
+desc:"Seguire attivamente la pratica AUA presso il SUAP e la Città Metropolitana per accelerare i tempi. Questo è il RISCHIO PRINCIPALE del progetto.",
+checks:["Contattare SUAP Milano per verificare assegnazione pratica","Chiedere contatto diretto del funzionario responsabile","Verificare se è possibile una conferenza di servizi accelerata","Verificare se il locale aveva precedenti autorizzazioni ambientali (faciliterebbe la pratica)","Rispondere IMMEDIATAMENTE a qualsiasi richiesta di integrazione","Valutare con l'avvocato: è possibile iniziare con SCIA condizionata all'ottenimento AUA?","Documentare ogni contatto e comunicazione","Report settimanale ai soci sullo stato della pratica"],
+refs:["Art. 4 D.P.R. 59/2013 — Tempistica rilascio AUA (90gg, prorogabili)","Strategia: chiamare SUAP prima di presentare per verificare completezza documentale"]},
+
+{id:"3.23",s:"auth",t:"Autorizzazione insegna",r:"Geometra",d0:"17/03",d1:"30/03",dp:"3.14",cr:false,w:2,
+desc:"Richiedere l'autorizzazione all'installazione dell'insegna esterna al Comune di Milano.",
+checks:["Compilare domanda specifica per insegne al Comune di Milano","Allegare: rendering/progetto dell'insegna con dimensioni","Allegare: planimetria della facciata","Pagamento CIMP (Canone per Installazione Mezzi Pubblicitari)","Tempi: variabili, fino a 30 giorni","Se in zona vincolata (centro storico): potrebbe servire parere Soprintendenza"],
+refs:["Regolamento insegne Comune Milano","Portale: fareimpresa.comune.milano.it"]},
+
+{id:"3.25",s:"auth",t:"SCIA artigianale SUAP",r:"Commercialista",d0:"02/04",d1:"03/04",dp:"2.11, 3.24",cr:true,w:4,
+desc:"Presentare la SCIA (Segnalazione Certificata di Inizio Attività) per l'attività artigianale di autolavaggio al SUAP di Milano. Con la SCIA si può iniziare l'attività immediatamente.",
+checks:["Compilazione SCIA su portale Impresainungiorno.gov.it","Indicare: dati impresa, sede, attività (cod. ATECO 45.20.91)","Allegare: planimetria dei locali","Allegare: Dichiarazioni di Conformità impianti (task 3.24)","Allegare: visura camerale aggiornata","Allegare: documento identità amministratore","Autocertificazione requisiti: conformità urbanistica, edilizia, igienico-sanitaria, ambientale","Pagamento diritti SUAP","NOTA: la SCIA per autolavaggio è obbligatoria anche con meno di 3 dipendenti (Del. GC Milano 1185.020/1998)","L'attività può iniziare dalla data di presentazione della SCIA"],
+refs:["Art. 19 L. 241/1990 — SCIA","Del. Giunta Comunale Milano 1185.020/1998","SUAP Milano: fareimpresa.comune.milano.it","D.Lgs. 59/2010 — Attuazione direttiva servizi"]},
+
+{id:"3.26",s:"auth",t:"Notifica art. 67 D.Lgs. 81/08",r:"Commercialista",d0:"02/04",d1:"03/04",dp:"2.11",cr:false,w:4,
+desc:"Se l'azienda ha almeno 3 lavoratori (incluso l'amministratore che lavora), va presentata la notifica preliminare all'ASL e alla Direzione Territoriale del Lavoro.",
+checks:["Verificare se il totale lavoratori (soci che lavorano + dipendenti) raggiunge 3","Se sì: compilare notifica ex art. 67 D.Lgs. 81/08","Inviare a: ASL competente + Direzione Territoriale Lavoro Milano","Contenuto: dati azienda, sede, attività, n. lavoratori, data inizio"],
+refs:["D.Lgs. 81/2008, art. 67 — Notifiche ai fini della sicurezza"]},
+
+{id:"3.27",s:"auth",t:"SCIA VVF prevenzione incendi",r:"Tecnico VVF",d0:"17/03",d1:"03/04",dp:"3.7",cr:false,w:2,
+desc:"Verificare se l'attività rientra tra quelle soggette a prevenzione incendi (DPR 151/2011). Se sì, presentare SCIA ai Vigili del Fuoco.",
+checks:["Verificare se l'attività rientra nell'Allegato I del DPR 151/2011","Autolavaggi: generalmente non soggetti, MA verificare in base a metratura e presenza depositi prodotti infiammabili","Se soggetti: incaricare tecnico abilitato per relazione prevenzione incendi","Presentare SCIA VVF prima dell'inizio attività","Installare estintori e segnaletica antincendio in ogni caso"],
+refs:["DPR 151/2011 — Regolamento prevenzione incendi","Comando VVF Milano: vigilfuoco.it"]},
+
+// === ASSICURAZIONI & SICUREZZA ===
+{id:"4.1",s:"insurance",t:"Polizza RC verso terzi",r:"CEO + Broker",d0:"20/03",d1:"30/03",dp:"2.10",cr:false,w:2,
+desc:"Stipulare una polizza di Responsabilità Civile verso terzi che copra i danni che l'attività potrebbe causare ai veicoli dei clienti e alle persone presenti nel locale.",
+checks:["Richiedere preventivi a 2-3 compagnie/broker","Copertura ESSENZIALE: danni alle moto dei clienti durante il servizio (graffi, cadute, rotture)","Copertura per danni a persone (clienti, visitatori)","Massimale adeguato: minimo 500.000€ (consigliato 1M€)","Verificare esclusioni e franchigie","Decorrenza: dalla data di apertura al pubblico","Il BP prevede 1.500€ anno 1 per tutte le polizze"],
+refs:["Art. 2043 c.c. — Risarcimento danni","Consiglio: contattare broker specializzato in attività artigianali"]},
+
+{id:"4.2",s:"insurance",t:"Polizza incendio e furto",r:"CEO + Broker",d0:"20/03",d1:"30/03",dp:"2.10",cr:false,w:2,
+desc:"Assicurare il locale, le attrezzature e la merce contro incendio, furto, atti vandalici ed eventi atmosferici.",
+checks:["Copertura: contenuto (attrezzature, prodotti, arredi)","Copertura: danni al locale (se richiesto dal contratto di locazione)","Copertura: interruzione attività (business interruption)","Verificare clausole del contratto di locazione: spesso il locatario è obbligato ad assicurare","Inventario delle attrezzature per determinare il valore assicurato"],
+refs:["Verificare obblighi nel contratto di locazione"]},
+
+{id:"4.3",s:"insurance",t:"Polizza RC veicoli sostitutivi",r:"CEO + Broker",d0:"20/03",d1:"30/03",dp:"2.10",cr:false,w:2,
+desc:"Assicurare i monopattini elettrici offerti come servizio sostitutivo ai clienti durante il lavaggio.",
+checks:["Polizza RC per monopattini elettrici","Copertura danni causati dal cliente durante l'uso","Copertura danni al monopattino stesso (kasko)","Verificare normativa assicurativa monopattini elettrici","Eventualmente: noleggio monopattini da società specializzata (che include assicurazione)"],
+refs:["L. 160/2019 e successive modifiche — Normativa monopattini","D.L. 121/2021 — Obblighi sicurezza monopattini"]},
+
+{id:"4.5",s:"insurance",t:"Polizza calamità naturali",r:"CEO + Broker",d0:"25/03",d1:"05/04",dp:"2.10",cr:false,w:3,
+desc:"Dal 2025 è obbligatorio per le imprese iscritte al Registro Imprese stipulare una polizza contro danni da calamità naturali ed eventi catastrofali.",
+checks:["Verificare scadenza dell'obbligo (proroghe possibili)","Richiedere preventivo per polizza catastrofale","Copertura: terremoti, alluvioni, frane, inondazioni","Obbligo introdotto dalla L. 213/2023, art. 1 comma 101","Sanzioni per inadempimento: non accessibilità a contributi pubblici post-calamità"],
+refs:["L. 213/2023 (Legge di Bilancio 2024), art. 1 comma 101","D.L. 31/03/2025 — Tempistiche attuazione"]},
+
+{id:"4.6",s:"insurance",t:"Nomina RSPP",r:"CEO",d0:"22/03",d1:"30/03",dp:"2.10",cr:true,w:2,
+desc:"Nominare il Responsabile del Servizio di Prevenzione e Protezione (RSPP). Nelle piccole imprese, può essere lo stesso datore di lavoro previa frequenza di corso specifico.",
+checks:["Opzione 1: il datore di lavoro (CEO) svolge direttamente il ruolo di RSPP — richiede corso di 16 ore per rischio basso/medio","Opzione 2: nominare consulente esterno come RSPP","Se opzione 1: iscriversi SUBITO a un corso RSPP datore di lavoro (disponibili anche online)","Formalizzare la nomina con comunicazione scritta","Comunicare ai lavoratori il nome del RSPP","Annotare la nomina nel DVR"],
+refs:["D.Lgs. 81/2008, art. 31-34 — RSPP","Accordo Stato-Regioni 21/12/2011 — Formazione datore di lavoro RSPP","Corso RSPP datore di lavoro: 16h per rischio medio"]},
+
+{id:"4.7",s:"insurance",t:"Redazione DVR",r:"RSPP / Consulente",d0:"25/03",d1:"05/04",dp:"4.6, 3.7",cr:true,w:3,
+desc:"Redigere il Documento di Valutazione dei Rischi (DVR), obbligatorio per TUTTE le aziende con almeno un lavoratore. Deve essere completato PRIMA dell'assunzione dei dipendenti.",
+checks:["Identificazione dei rischi: chimico (prodotti), scivolamento, ergonomico, elettrico, rumore","Valutazione della probabilità e gravità di ogni rischio","Misure di prevenzione e protezione adottate","DPI necessari per ogni mansione","Programma di miglioramento","Firma del datore di lavoro, RSPP, medico competente, RLS (se eletto)","Il DVR deve essere datato e conservato in azienda","ATTENZIONE: deve essere pronto PRIMA dell'inizio del rapporto di lavoro dei dipendenti"],
+refs:["D.Lgs. 81/2008, art. 17 e 28-29 — DVR","Procedure standardizzate per PMI < 10 lavoratori: Art. 29 comma 5"]},
+
+{id:"4.8",s:"insurance",t:"Nomina medico competente",r:"CEO",d0:"25/03",d1:"30/03",dp:"2.10",cr:false,w:3,
+desc:"Nominare un medico competente per la sorveglianza sanitaria dei lavoratori esposti a rischi specifici (chimico, posturale).",
+checks:["Individuare medico competente (specializzato in medicina del lavoro)","Verificare iscrizione nell'elenco dei medici competenti del Ministero","Stipulare convenzione/contratto con il medico","Costo: circa 50-80€ per visita + quota annua","Il medico definirà il protocollo sanitario in base ai rischi del DVR","Visite preassuntive obbligatorie prima dell'inizio lavoro"],
+refs:["D.Lgs. 81/2008, art. 38-42 — Medico competente","Elenco medici competenti: lavoro.gov.it"]},
+
+{id:"4.9",s:"insurance",t:"Acquisto DPI operatori",r:"COO",d0:"28/03",d1:"05/04",dp:"—",cr:false,w:3,
+desc:"Acquistare i Dispositivi di Protezione Individuale necessari per gli operatori del centro lavaggio.",
+checks:["Guanti in nitrile resistenti ai prodotti chimici","Occhiali protettivi (schizzi acqua ad alta pressione e prodotti)","Calzature antinfortunistiche antiscivolo (S2 o S3)","Grembiuli impermeabili","Eventuali protezioni auricolari (se idropulitrici rumorose)","Tutti i DPI devono essere marcati CE","Registrare consegna DPI ai dipendenti (firma ricevuta)"],
+refs:["D.Lgs. 81/2008, Titolo III — DPI","Reg. UE 2016/425 — Dispositivi di protezione individuale"]},
+
+{id:"4.11",s:"insurance",t:"Formazione sicurezza 4h+4h",r:"RSPP / Ente form.",d0:"05/04",d1:"10/04",dp:"4.6",cr:true,w:5,
+desc:"Formazione obbligatoria sulla sicurezza per tutti i lavoratori: 4 ore di formazione generale + 4 ore di formazione specifica per rischio medio.",
+checks:["Formazione generale (4h): concetti base sicurezza, diritti e doveri","Formazione specifica (4h): rischi dell'attività di autolavaggio (chimico, scivolamento, elettrico, movimentazione)","Ente formativo accreditato dalla Regione Lombardia o e-learning accreditato","La formazione deve avvenire DURANTE l'orario di lavoro","Rilascio attestati individuali (conservare in azienda)","La formazione deve essere completata ENTRO 60 giorni dall'assunzione","Consigliato: farla PRIMA dell'apertura al pubblico"],
+refs:["Accordo Stato-Regioni 21/12/2011 — Formazione lavoratori","D.Lgs. 81/2008, art. 37 — Formazione"]},
+
+{id:"4.12",s:"insurance",t:"Privacy clienti GDPR",r:"Avvocato",d0:"25/03",d1:"01/04",dp:"2.10",cr:false,w:3,
+desc:"Redigere l'informativa privacy per i clienti, con particolare attenzione al servizio fotografico HD che implica trattamento di immagini.",
+checks:["Informativa privacy ex art. 13 GDPR per i clienti","Sezione specifica per: raccolta dati prenotazione, dati di contatto, dati di pagamento","Sezione specifica per: servizio fotografico (immagini = dati personali)","Sezione specifica per: CRM e marketing (consenso newsletter, promozioni)","Informativa cookie per il sito web","Registro dei trattamenti (art. 30 GDPR)","Informativa da esporre nel locale e pubblicare sul sito web","Modulo consenso fotografico separato (task 4.16)"],
+refs:["Reg. UE 2016/679 (GDPR) — Art. 13-14","D.Lgs. 196/2003 (Codice Privacy) modificato dal D.Lgs. 101/2018","Garante Privacy: garanteprivacy.it"]},
+
+{id:"4.13",s:"insurance",t:"Privacy dipendenti",r:"Avvocato",d0:"25/03",d1:"01/04",dp:"2.10",cr:false,w:3,
+desc:"Informativa privacy specifica per i dipendenti: trattamento dati personali nel rapporto di lavoro.",
+checks:["Informativa trattamento dati ex art. 13 GDPR per dipendenti","Trattamenti: dati anagrafici, buste paga, sorveglianza sanitaria","Se previste telecamere: informativa videosorveglianza + accordo sindacale o autorizzazione ITL","Consegna informativa al momento dell'assunzione (firma per ricevuta)"],
+refs:["Art. 88 GDPR — Trattamento dati in ambito lavorativo","Provvedimento Garante 8/4/2010 — Videosorveglianza"]},
+
+{id:"4.16",s:"insurance",t:"Consensi foto HD e social",r:"Avvocato",d0:"01/04",d1:"05/04",dp:"4.12",cr:false,w:4,
+desc:"Predisporre i moduli di consenso per il servizio fotografico HD e per l'eventuale condivisione delle immagini sui social media del brand.",
+checks:["Modulo consenso per servizio fotografico (opt-in)","Consenso specifico per: pubblicazione su social media del brand","Consenso specifico per: utilizzo su sito web e materiali promozionali","Diritto di revoca del consenso","Conservazione dei consensi firmati (archivio digitale e cartaceo)","Il consenso per le foto è SEPARATO dall'informativa privacy generale","Nota: le foto delle MOTO senza persone/targhe riconoscibili non richiedono consenso"],
+refs:["Art. 6-7 GDPR — Base giuridica e consenso","Art. 96-97 L. 633/1941 — Diritto all'immagine"]},
+
+// === RISORSE UMANE ===
+{id:"5.1",s:"hr",t:"Definizione profili professionali",r:"CEO + COO",d0:"12/03",d1:"14/03",dp:"—",cr:false,w:1,
+desc:"Definire con precisione i profili dei 2 operatori da assumere: competenze tecniche, soft skills, inquadramento contrattuale, retribuzione.",
+checks:["Profilo Operatore 1: esperienza in detailing/car care, attenzione al dettaglio, capacità relazionale col cliente premium","Profilo Operatore 2: può essere junior con forte motivazione e formabilità","Inquadramento CCNL: identificare livello contrattuale (es. CCNL Artigianato, livello 4-5)","RAL prevista dal BP: 24.000€ operatore 1, 18.000€ operatore 2","Orario di lavoro: full-time 40h/settimana, sabato incluso","Periodo di prova: definire durata (max previsto dal CCNL)","Lista competenze obbligatorie vs desiderate"],
+refs:["CCNL Area Meccanica Artigianato (se iscritti Albo Artigiani)","In alternativa: CCNL Commercio — Confcommercio"]},
+
+{id:"5.2",s:"hr",t:"Pubblicazione annunci lavoro",r:"PM / COO",d0:"14/03",d1:"15/03",dp:"5.1",cr:false,w:1,
+desc:"Pubblicare gli annunci di lavoro su piattaforme mirate per trovare operatori con esperienza nel settore automotive/detailing.",
+checks:["Indeed.it — annuncio gratuito o sponsorizzato","LinkedIn — post + annuncio","Subito.it — sezione lavoro","Centri per l'Impiego di Milano (Agenzia Regionale Lavoro)","Contattare scuole professionali automotive zona Milano","Gruppi Facebook/Telegram dedicati a detailing e car care","Annuncio chiaro: mansione, competenze richieste, RAL, sede Milano centro, orari"],
+refs:["Centro Impiego Milano: agenzialavoro.regione.lombardia.it"]},
+
+{id:"5.3",s:"hr",t:"Screening CV",r:"PM / COO",d0:"15/03",d1:"22/03",dp:"5.2",cr:false,w:2,
+desc:"Raccogliere e valutare le candidature ricevute, selezionando i profili più promettenti per i colloqui.",
+checks:["Raccogliere CV da tutte le piattaforme in un unico punto (cartella o foglio Excel)","Pre-screening su criteri: esperienza automotive/detailing, zona Milano, disponibilità immediata","Scartare candidature non idonee","Shortlist di 6-10 candidati per i colloqui","Contatto telefonico preliminare per verificare disponibilità e motivazione","Programmare colloqui nella settimana 3"],
+refs:["Nota: verificare permesso di soggiorno se candidati non UE"]},
+
+{id:"5.4",s:"hr",t:"Colloqui di selezione",r:"CEO + COO",d0:"22/03",d1:"28/03",dp:"5.3",cr:false,w:3,
+desc:"Condurre i colloqui di selezione. Consigliata una prova pratica per valutare le competenze tecniche reali.",
+checks:["Colloquio conoscitivo (30 min): motivazione, esperienza, aspettative","Prova pratica (se possibile): lavaggio di un elemento (cerchio, sella) con valutazione tecnica","Domande su: conoscenza prodotti detailing, attenzione al dettaglio, rapporto con clientela premium","Presentare il progetto Moto Élite Care (il brand, la visione, il posizionamento)","Valutare: affidabilità, puntualità, cura dell'aspetto, comunicazione","Almeno 2 candidati idonei per ruolo (backup)","Feedback scritto su ogni candidato"],
+refs:["Consiglio: preparare una griglia di valutazione standardizzata per confrontare i candidati"]},
+
+{id:"5.5",s:"hr",t:"Scelta candidati",r:"CEO",d0:"28/03",d1:"30/03",dp:"5.4",cr:true,w:3,
+desc:"Selezionare i 2 operatori e formalizzare la proposta di assunzione. Concordare data di inizio, retribuzione e condizioni.",
+checks:["Decisione finale con CEO e COO allineati","Comunicare la proposta ai candidati selezionati (telefonicamente + email di conferma)","Definire: data inizio (ideale 7 aprile per formazione pre-apertura), RAL, livello, orario","Richiedere documenti per l'assunzione: CI, CF, IBAN, stato famiglia, titolo di studio","Comunicare ai candidati non selezionati","Passare informazioni al consulente del lavoro per la contrattualistica"],
+refs:["Tempi: la comunicazione UNILAV va fatta entro il giorno precedente l'inizio del lavoro"]},
+
+{id:"5.6",s:"hr",t:"UNILAV comunicazione assunzione",r:"Consulente lavoro",d0:"01/04",d1:"05/04",dp:"5.5",cr:true,w:4,
+desc:"Il consulente del lavoro invia la comunicazione obbligatoria di assunzione (modello UNILAV) al Centro per l'Impiego. Va fatto ENTRO le 24 ore precedenti l'inizio del rapporto di lavoro.",
+checks:["Invio telematico modello UNILAV per ciascun dipendente","Dati: anagrafica lavoratore, tipo contratto, livello, RAL, data inizio, orario","Invio a: Centro per l'Impiego competente","Copia per: INPS, INAIL (ricevono automaticamente)","Conservare ricevuta di invio","DEADLINE: entro le 23:59 del giorno precedente l'inizio del lavoro"],
+refs:["D.Lgs. 181/2000 — Comunicazioni obbligatorie","Portale CO Lombardia: co.lavoro.regione.lombardia.it"]},
+
+{id:"5.7",s:"hr",t:"Contratti di lavoro",r:"Consulente lavoro",d0:"01/04",d1:"05/04",dp:"5.5",cr:false,w:4,
+desc:"Redigere e far firmare i contratti individuali di lavoro ai 2 operatori.",
+checks:["Contratto conforme al CCNL applicato (Artigianato o Commercio)","Indicare: livello, mansione, RAL, orario, sede, periodo di prova","Allegare: informativa ex D.Lgs. 104/2022 (Decreto Trasparenza)","Allegare: informativa privacy dipendenti (task 4.13)","Consegna copia al lavoratore prima dell'inizio","Firma di entrambe le parti","Archiviare nel fascicolo personale del dipendente"],
+refs:["CCNL applicato","D.Lgs. 104/2022 — Obblighi informativi al lavoratore","D.Lgs. 152/1997 modificato — Condizioni di lavoro"]},
+
+{id:"5.8",s:"hr",t:"Visita medica preassuntiva",r:"Medico competente",d0:"02/04",d1:"08/04",dp:"4.8, 5.5",cr:false,w:4,
+desc:"Il medico competente effettua la visita medica preassuntiva per verificare l'idoneità alla mansione dei nuovi operatori.",
+checks:["Programmare visita con il medico competente nominato (task 4.8)","Visita PRIMA dell'effettivo inizio dell'attività lavorativa","Il medico emette giudizio di idoneità alla mansione specifica","Eventuale prescrizione di limitazioni","Rilascio certificato di idoneità da conservare in azienda","Costo: circa 50-80€ per visita"],
+refs:["D.Lgs. 81/2008, art. 41 — Sorveglianza sanitaria"]},
+
+{id:"5.9",s:"hr",t:"Formazione tecnica operativa",r:"COO",d0:"07/04",d1:"11/04",dp:"5.5",cr:true,w:5,
+desc:"Formare i 2 operatori sulle procedure operative standard del centro: tecniche di lavaggio, uso prodotti, protocolli di qualità, gestione cliente.",
+checks:["Procedura di lavaggio step-by-step per ogni pacchetto (Base, Premium, Luxury)","Conoscenza prodotti: quale prodotto per quale superficie/materiale","Uso corretto delle attrezzature (idropulitrici, aspiratori)","Protocollo accoglienza cliente e gestione della moto (check-in, check-out)","Procedura per il servizio fotografico HD","Uso del sistema POS e del CRM/prenotazioni","Gestione reclami e situazioni critiche","Prove pratiche su moto reali (almeno 2-3 lavaggi completi supervisonati)","Test finale di verifica competenze"],
+refs:["Creare un manuale operativo standard (SOP) — sarà la base per il futuro franchising"]},
+
+{id:"5.10",s:"hr",t:"Formazione customer experience",r:"CEO",d0:"07/04",d1:"11/04",dp:"5.5",cr:false,w:5,
+desc:"Formare gli operatori sul posizionamento premium del brand, la customer experience e i valori di Moto Élite Care.",
+checks:["Presentazione del brand: mission, vision, valori","Il cliente tipo: motociclista premium, alto potere d'acquisto, esigente","Standard di accoglienza: come salutare, come presentare i servizi","Upselling: come proporre servizi aggiuntivi (foto HD, prodotti, eventi)","Gestione delle aspettative del cliente premium","Dress code: come indossare la divisa, cura dell'aspetto personale","Role play: simulazione di accoglienza e servizio"],
+refs:["Coerenza con il pitch deck — slide 4 'Value Proposition'"]},
+
+{id:"5.11",s:"hr",t:"Incarico consulente lavoro",r:"Commercialista",d0:"15/03",d1:"18/03",dp:"2.1",cr:false,w:1,
+desc:"Individuare e incaricare un consulente del lavoro per la gestione dei rapporti di lavoro, buste paga e adempimenti contributivi.",
+checks:["Chiedere al commercialista referenze di consulenti del lavoro a Milano","Richiedere preventivo per: elaborazione buste paga, UNILAV, adempimenti annuali","Confermare disponibilità per assunzioni entro inizio aprile","Firmare lettera di incarico"],
+refs:["Ordine Consulenti del Lavoro Milano: consulentidellavoro.mi.it"]},
+
+// === FORNITURE & TECH ===
+{id:"6.1",s:"supply",t:"Idropulitrici professionali",r:"COO",d0:"15/03",d1:"25/03",dp:"—",cr:false,w:1,
+desc:"Selezionare e acquistare le idropulitrici professionali per il lavaggio moto. Servono macchine di qualità professionale ma delicate per non danneggiare le superfici delle moto premium.",
+checks:["Idropulitrice a BASSA pressione (80-100 bar) per lavaggio delicato carrozzeria — marca consigliata: Kärcher Professional, Comet, Lavor","Idropulitrice a MEDIA pressione (120-150 bar) per cerchi e parti meccaniche","Eventuale generatore di vapore per detailing di precisione","Lancia con regolazione pressione e ventaglio","Accessori: ugelli specifici, lance a schiuma, prolunghe","Verificare allaccio elettrico compatibile con l'impianto del locale","Budget: parte dei 3.000€ attrezzatura minore BP"],
+refs:["Consiglio: contattare fornitori specializzati detailing (DetailedImage, Mafra Pro, Koch Chemie)"]},
+
+{id:"6.2",s:"supply",t:"Prodotti detailing premium",r:"COO",d0:"15/03",d1:"25/03",dp:"—",cr:false,w:1,
+desc:"Selezionare e acquistare la gamma completa di prodotti per il lavaggio e detailing professionale delle moto.",
+checks:["Shampoo neutro pH bilanciato per carrozzerie","Sgrassatore per motori e catene","Detergente specifico per cerchi","Cera protettiva / sealant","Polish per graffi leggeri","Protettivo per plastica e gomme","Detergente per cuoio/sella","Prodotto per visiere caschi","Acqua demineralizzata per risciacquo finale (no macchie calcare)","Marche consigliate pro: Koch Chemie, Meguiar's Pro, Gtechniq, Gyeon","Stock iniziale per almeno 1 mese di operatività","Budget BP: 25.000€/anno costo prodotti lavaggio"],
+refs:["Fornitori detailing pro Italia: lacuradellauto.it, detailedimage.com"]},
+
+{id:"6.3",s:"supply",t:"Attrezzatura minore",r:"COO",d0:"15/03",d1:"25/03",dp:"—",cr:false,w:1,
+desc:"Acquistare tutta l'attrezzatura minore necessaria per le operazioni quotidiane.",
+checks:["Panni in microfibra professionali (GSM 300-400) — almeno 50 pezzi","Spugne per lavaggio (diverse per corpo, cerchi, motore)","Pennelli detailing per dettagli e fessure","Aspiratore professionale (secco/umido)","Compressore per asciugatura e pulizia","Carrelli porta-prodotti con ruote","Secchi da lavaggio con grit guard","Supporto/cavalletto per moto (sicurezza durante il lavaggio)","Spruzzini e dosatori professionali","Guanti monouso per lavori sporchi"],
+refs:["Budget BP: 3.000€ attrezzatura minore anno 1"]},
+
+{id:"6.4",s:"supply",t:"iPad, PC, stampante",r:"COO",d0:"18/03",d1:"28/03",dp:"—",cr:false,w:2,
+desc:"Acquistare i dispositivi elettronici per gestione cassa, CRM, prenotazioni e amministrazione.",
+checks:["iPad per reception/cassa (con supporto da banco)","PC/laptop per amministrazione e gestione back-office","Stampante multifunzione (per ricevute, contratti, documenti)","Eventuale tablet aggiuntivo per operatori (check-list digitale lavaggio)","Custodie resistenti all'acqua per dispositivi in zona lavaggio","Budget BP: 2.000€ apparecchi elettronici anno 1"],
+refs:["Consiglio: iPad con Apple Business Manager per gestione centralizzata"]},
+
+{id:"6.5",s:"supply",t:"Monopattino elettrico",r:"COO",d0:"20/03",d1:"01/04",dp:"—",cr:false,w:2,
+desc:"Acquistare o noleggiare monopattini elettrici da offrire ai clienti come servizio sostitutivo durante il lavaggio.",
+checks:["Acquisto 1-2 monopattini elettrici (es. Xiaomi, Segway-Ninebot)","Verificare conformità alle norme stradali italiane","Caschi da fornire ai clienti (obbligatori per minorenni, consigliati per tutti)","Sistema di tracciamento/antifurto (GPS)","Assicurazione RC (task 4.3)","Stazione di ricarica nel locale","Budget BP: 3.000€ veicoli sostitutivi anno 1"],
+refs:["Normativa monopattini: D.L. 121/2021 convertito in L. 156/2021"]},
+
+{id:"6.6",s:"supply",t:"Attrezzatura foto / fotografo",r:"COO",d0:"20/03",d1:"01/04",dp:"—",cr:false,w:2,
+desc:"Organizzare il servizio fotografico HD per le moto dei clienti: acquistare attrezzatura oppure contrattualizzare un fotografo freelance.",
+checks:["Opzione A: fotografo freelance (costa di più ma qualità garantita) — contratto task 8.5","Opzione B: attrezzatura interna — fotocamera reflex/mirrorless, treppiede, pannelli LED","Definire setup fotografico standard: sfondo, illuminazione, angolazioni","Creare template di editing per uniformità","Sistema di consegna foto al cliente (link cloud, email, app)","Il servizio è previsto per il 25% dei clienti — valutare domanda reale"],
+refs:["Budget BP: costo fotografo 10€/servizio × 563 servizi anno 1 = 5.625€"]},
+
+{id:"6.7",s:"supply",t:"Sistema POS",r:"CEO / Comm.",d0:"20/03",d1:"28/03",dp:"2.17",cr:false,w:2,
+desc:"Scegliere e attivare il sistema di pagamento elettronico (POS) per accettare carte e pagamenti digitali.",
+checks:["Confrontare: SumUp (1,95% commissione, no canone), Nexi (commissioni variabili), Satispay Business","Valutare integrazione con sistema di cassa/fatturazione","Verificare accettazione: Visa, Mastercard, contactless, Apple Pay, Google Pay","Attivare e collegare al conto corrente societario","Testare funzionamento","BP prevede crescita pagamenti con carta: 50% anno 1 → 70% anno 5"],
+refs:["Obbligo POS: D.L. 36/2022 — Sanzioni per mancata accettazione pagamenti elettronici"]},
+
+{id:"6.8",s:"supply",t:"Fornitori merchandising",r:"CEO",d0:"18/03",d1:"01/04",dp:"—",cr:false,w:2,
+desc:"Identificare e contrattualizzare fornitori per i prodotti da rivendere (cura moto) e il merchandising brandizzato (t-shirt, cappellini, adesivi).",
+checks:["Fornitori prodotti cura moto: Mafra, Bardahl, WD-40, Motorex","Fornitori merchandising personalizzato: Printful, Spreadshirt, tipografie locali","Definire catalogo prodotti iniziale (10-15 referenze)","Negoziare condizioni: MOQ, tempi consegna, margini, resi","Marca privata (white label) con brand Moto Élite Care?","Margine lordo previsto: (150€ - 100€) / 150€ = 33% circa","Budget BP: 12.000€ ricavi vendita anno 1"],
+refs:["Consiglio: iniziare con pochi prodotti best-seller e ampliare in base alla domanda"]},
+
+{id:"6.9",s:"supply",t:"Sito web + prenotazioni online",r:"Social Media Mgr",d0:"12/03",d1:"01/04",dp:"1.7",cr:true,w:1,
+desc:"Sviluppare il sito web aziendale con sistema di prenotazione online integrato per i servizi di lavaggio. Budget previsto: 5.000€.",
+checks:["Sito responsive (mobile-first)","Pagine: Home, Servizi (con prezzi), Chi siamo, Prenota, Contatti, Shop (fase 2)","Sistema di prenotazione: data, ora, tipo servizio, dati cliente","Conferma automatica via email","Integrazione con CRM (task 6.10)","SEO base: meta tag, Google Search Console, sitemap","Foto professionali del locale (appena pronto)","Testi coerenti con tone of voice premium","Informativa privacy e cookie (task 4.12)","Hosting affidabile con SSL (HTTPS obbligatorio)","Piattaforme consigliate: WordPress + Jetyak/Amelia per prenotazioni, oppure Webflow"],
+refs:["Budget BP: 5.000€ per sito + e-commerce + CRM","GDPR: cookie banner e informativa obbligatoria"]},
+
+{id:"6.10",s:"supply",t:"CRM gestione clienti",r:"Social Media Mgr",d0:"15/03",d1:"05/04",dp:"6.9",cr:false,w:1,
+desc:"Implementare un CRM per gestire la relazione con i clienti: storico servizi, preferenze, programma fedeltà, comunicazioni.",
+checks:["Scegliere CRM: HubSpot Free, Mailchimp, o plugin WordPress (es. FluentCRM)","Campi cliente: nome, telefono, email, moto (marca, modello, targa), storico servizi","Automazioni: email di ringraziamento post-servizio, reminder per prossimo lavaggio","Segmentazione: per tipo moto, frequenza, servizi acquistati","Predisposizione per programma 'Affiliazione Luxury' (anno 2)","Integrazione con sistema prenotazioni","Conformità GDPR: consenso marketing esplicito"],
+refs:["HubSpot CRM gratuito: hubspot.com/crm","BP: 500€ implementazione CRM anno 1"]},
+
+{id:"6.11",s:"supply",t:"Cassa / fatturazione elettronica",r:"Commercialista",d0:"28/03",d1:"05/04",dp:"2.11, 6.7",cr:true,w:3,
+desc:"Configurare il sistema di cassa e fatturazione elettronica, obbligatoria per tutte le imprese.",
+checks:["Scegliere software gestionale/cassa: Fatture in Cloud, Aruba, oppure registratore telematico","Registratore telematico: obbligatorio se vendita al dettaglio (invio corrispettivi all'AdE)","Configurare P.IVA e dati fiscali","Collegare al POS","Test di emissione scontrino/fattura","Il commercialista deve validare la configurazione","Formazione all'uso per operatori e amministratore"],
+refs:["Obbligo corrispettivi telematici: agenziaentrate.gov.it","D.Lgs. 127/2015 — Fatturazione elettronica"]},
+
+{id:"6.12",s:"supply",t:"E-commerce prodotti",r:"Social Media Mgr",d0:"25/03",d1:"10/04",dp:"6.9",cr:false,w:3,
+desc:"Aggiungere al sito web la sezione e-commerce per la vendita online di prodotti per la cura della moto e merchandising brandizzato.",
+checks:["Sezione shop sul sito (WooCommerce se WordPress, oppure Shopify collegato)","Catalogo prodotti con foto professionali e descrizioni","Gestione giacenze/magazzino","Gateway di pagamento (Stripe o PayPal)","Calcolo automatico spedizioni","Condizioni di vendita e diritto di recesso (14 giorni per e-commerce)","Informativa privacy specifica per e-commerce","BP prevede crescita e-commerce: 5% vendite anno 1 → 50% anno 5"],
+refs:["D.Lgs. 206/2005 — Codice del Consumo (diritto recesso e-commerce)","D.Lgs. 70/2003 — Commercio elettronico"]},
+
+// === MARKETING & LANCIO ===
+{id:"7.1",s:"marketing",t:"Brand identity definitiva",r:"Graphic Designer",d0:"10/03",d1:"17/03",dp:"—",cr:true,w:1,
+desc:"Finalizzare l'intera identità visiva del brand. Questo è il fondamento su cui si costruisce tutta la comunicazione.",
+checks:["Logo definitivo in tutte le versioni (colori, B/N, negativo, orizzontale, verticale)","Palette colori: primario, secondario, accento (codici HEX, RGB, CMYK, Pantone)","Tipografia: font primario (titoli) e secondario (body)","Brand manual/guidelines PDF: regole di utilizzo logo, spazi, colori, font, tone of voice","Elementi grafici secondari: pattern, icone, texture","Template social media (Instagram post, story, copertina FB)","Template presentazioni (PowerPoint/Keynote)","Mockup applicazioni: insegna, divise, biglietti, packaging"],
+refs:["Consiglio: usare Figma o Canva Pro per gestire asset condivisi"]},
+
+{id:"7.2",s:"marketing",t:"Biglietti visita, brochure",r:"Graphic Designer",d0:"17/03",d1:"22/03",dp:"7.1",cr:false,w:2,
+desc:"Progettare i materiali cartacei essenziali per l'apertura.",
+checks:["Biglietti da visita premium (carta spessa 400g, eventuale stampa a caldo oro)","Brochure servizi (A4 piegata a 3 o A5): servizi, prezzi, brand story","Carta intestata e busta coordinata","Volantino promozionale per inaugurazione","File di stampa in PDF/X-1a con abbondanze e segni di taglio"],
+refs:["Tipografie online: Pixartprinting, Flyeralarm, Printful"]},
+
+{id:"7.3",s:"marketing",t:"Packaging merchandising",r:"Graphic Designer",d0:"17/03",d1:"25/03",dp:"7.1",cr:false,w:2,
+desc:"Progettare il packaging brandizzato per i prodotti in vendita e i gadget.",
+checks:["Etichette personalizzate per prodotti white label","Sacchetti/shopper brandizzati","Adesivi con logo","Eventuali box regalo/kit","Coerenza con brand identity"],
+refs:["Se white label: verificare normativa etichettatura prodotti chimici (CLP)"]},
+
+{id:"7.4",s:"marketing",t:"Stampa materiale",r:"COO",d0:"25/03",d1:"01/04",dp:"7.2",cr:false,w:3,
+desc:"Inviare in stampa tutti i materiali cartacei progettati e riceverli in tempo per l'inaugurazione.",
+checks:["Ordine stampa biglietti da visita (min. 500 pezzi)","Ordine stampa brochure (min. 200)","Ordine stampa volantini inaugurazione (500-1.000)","Ordine adesivi e shopper","Verificare bozze di stampa (proof) prima della produzione","Tempi di consegna: 5-7 giorni lavorativi per stampa online"],
+refs:["Ordinare entro il 25/03 per ricevere entro il 01/04"]},
+
+{id:"7.5",s:"marketing",t:"Divise staff",r:"COO",d0:"18/03",d1:"01/04",dp:"7.1",cr:false,w:2,
+desc:"Progettare e ordinare le divise brandizzate per tutto lo staff (operatori + management).",
+checks:["Polo o t-shirt con logo ricamato/stampato","Colore coerente con brand identity (nero + oro?)","Grembiule impermeabile brandizzato per operatori","Eventuale felpa/giacca per stagione fredda","Taglia: raccogliere taglie di tutti i dipendenti","Ordine: almeno 3 cambi per operatore","Fornitori: Printful, tipografie locali, Vistaprint"],
+refs:["Il dress code premium è parte dell'esperienza cliente"]},
+
+{id:"7.6",s:"marketing",t:"Piano editoriale social",r:"Social Media Mgr",d0:"12/03",d1:"17/03",dp:"1.8",cr:false,w:1,
+desc:"Creare il piano editoriale per le settimane pre-lancio sui social media. L'obiettivo è creare curiosità e aspettativa prima dell'apertura.",
+checks:["Calendario contenuti: 3-5 post/settimana su Instagram, 2-3 su Facebook","Settimana 1-2: teaser misteriosi ('Qualcosa sta arrivando a Milano...')","Settimana 2-3: behind the scenes (lavori locale, preparativi, primi prodotti)","Settimana 3-4: reveal servizi, presentazione team, countdown apertura","Settimana 5: evento inaugurazione, dirette, stories","Formato contenuti: Reels (video brevi), carousel, stories","Hashtag strategy: #MotoEliteCare #LuxuryMotoCare #MotoMilano #DetailingMoto","Tone of voice: premium ma accessibile, passione per le moto","Orari migliori di pubblicazione per il target motociclisti"],
+refs:["Strumenti: Later.com o Planoly per programmazione post","Meta Business Suite per gestione integrata IG + FB"]},
+
+{id:"7.7",s:"marketing",t:"Contenuti foto/video",r:"Social Media Mgr",d0:"20/03",d1:"05/04",dp:"7.6",cr:false,w:2,
+desc:"Produrre contenuti foto e video per i social media, documentando il percorso verso l'apertura.",
+checks:["Foto del locale durante i lavori (prima/dopo)","Video time-lapse dell'allestimento","Foto dei prodotti e delle attrezzature","Foto team in divisa","Video di un lavaggio demo (appena possibile)","Contenuti 'dietro le quinte' che raccontano la storia","Qualità: buona illuminazione, stabilizzatore per video, audio pulito","Formato: verticale per Reels/Stories, quadrato per feed"],
+refs:["Smartphone recente (iPhone 14+ o Samsung S23+) sufficiente per contenuti social di qualità"]},
+
+{id:"7.8",s:"marketing",t:"Campagna IG/FB Ads Milano",r:"Social Media Mgr",d0:"25/03",d1:"12/04",dp:"7.6",cr:false,w:3,
+desc:"Lanciare campagne pubblicitarie geo-targetizzate su Instagram e Facebook per generare awareness e raccogliere contatti prima dell'apertura.",
+checks:["Target: uomini/donne 25-55, Milano e provincia, interessi: moto, Ducati, BMW Motorrad, MV Agusta, Harley-Davidson, detailing","Geo-targeting: raggio 20km da Milano centro","Obiettivo campagna 1: Brand Awareness (raggiungere il massimo di persone in target)","Obiettivo campagna 2: Lead generation (raccolta email/telefono per invito inaugurazione)","Budget: 500-1.000€ per le prime 2 settimane (parte dei 7.500€ marketing digitale BP)","A/B testing: creatività diverse, copy diversi","Monitoraggio giornaliero delle performance"],
+refs:["Meta Ads Manager: business.facebook.com","Budget BP: 7.500€ marketing digitale anno 1"]},
+
+{id:"7.9",s:"marketing",t:"Contatto influencer moto",r:"Social Media Mgr",d0:"15/03",d1:"01/04",dp:"—",cr:false,w:1,
+desc:"Identificare e contattare micro-influencer e content creator del mondo moto a Milano per collaborazioni e copertura dell'inaugurazione.",
+checks:["Ricerca su Instagram/TikTok/YouTube: hashtag #motoitalia #motomilano #ducatista #bmwmotorrad","Identificare 10-15 profili con 5k-50k follower (micro-influencer = più engagement)","Verificare autenticità follower (no fake)","DM o email di contatto con proposta: lavaggio gratuito in cambio di contenuto (story, post, reel)","Invito all'evento di inaugurazione","Non serve budget: il servizio gratuito è sufficiente come compenso per micro-influencer","Creare lista con: nome, handle, follower, contatto, stato trattativa"],
+refs:["Strumenti per verificare follower: HypeAuditor, Social Blade"]},
+
+{id:"7.10",s:"marketing",t:"Google Ads locale",r:"Social Media Mgr",d0:"01/04",d1:"12/04",dp:"6.9",cr:false,w:4,
+desc:"Campagna Google Ads per intercettare chi cerca attivamente servizi di lavaggio moto a Milano.",
+checks:["Keyword: 'lavaggio moto Milano', 'detailing moto Milano', 'pulizia moto Milano', 'autolavaggio moto'","Annunci di ricerca (Search) geo-targetizzati su Milano","Landing page dedicata sul sito (o homepage ottimizzata)","Budget iniziale: 300-500€/mese","Monitorare: CTR, CPC, conversioni (prenotazioni)","Estensioni annuncio: località, chiamata, sitelink"],
+refs:["Google Ads: ads.google.com","Google Keyword Planner per volumi di ricerca"]},
+
+{id:"7.11",s:"marketing",t:"Google My Business",r:"Social Media Mgr",d0:"01/04",d1:"05/04",dp:"6.9",cr:false,w:4,
+desc:"Creare e ottimizzare il profilo Google My Business (Google Business Profile) per apparire nelle ricerche locali e su Google Maps.",
+checks:["Creare profilo su business.google.com","Categoria principale: 'Autolavaggio' o 'Servizio di detailing auto'","Inserire: indirizzo, telefono, orari, sito web","Caricare foto professionali del locale (appena pronto)","Scrivere descrizione ottimizzata con keyword","Richiedere verifica (cartolina postale o telefono)","Attivare messaggistica diretta","Chiedere le prime recensioni a amici/conoscenti motociclisti dopo l'apertura"],
+refs:["Google Business Profile: business.google.com","La scheda GMB è FONDAMENTALE per il traffico locale"]},
+
+{id:"7.12",s:"marketing",t:"Pianificazione inaugurazione",r:"PM + CEO",d0:"15/03",d1:"20/03",dp:"—",cr:true,w:1,
+desc:"Pianificare nel dettaglio l'evento di inaugurazione del centro (11-12 aprile). L'evento deve generare buzz, stampa e i primi clienti.",
+checks:["Data: sabato 11 aprile (o domenica 12) — orario: 11:00-18:00","Format: open day con lavaggi demo gratuiti, esposizione moto, aperitivo, musica","Budget evento: parte dei 3.000€ fiere/eventi BP","Definire programma orario (es. 11:00 apertura, 12:00 demo, 13:00 brunch, 15:00 talk)","Location setup: area buffet, area demo lavaggio, area espositiva, area foto","Fotografo e videomaker per documentare l'evento","Eventuali interventi/speech del CEO","Taglio del nastro simbolico","Promozione speciale inaugurazione (es. -20% primo lavaggio per chi prenota il giorno dell'evento)"],
+refs:["Verificare se serve SCIA per somministrazione temporanea di cibi e bevande"]},
+
+{id:"7.13",s:"marketing",t:"Lista invitati evento",r:"CEO + SMM",d0:"20/03",d1:"30/03",dp:"7.12",cr:false,w:2,
+desc:"Compilare la lista completa degli invitati all'inaugurazione, segmentata per categoria.",
+checks:["Motoclub Milano e hinterland (almeno 5-10 club)","Concessionari moto premium zona Milano (BMW Motorrad, Ducati, Triumph, MV Agusta, Harley)","Giornalisti e blogger del settore moto","Influencer e content creator (dalla lista task 7.9)","Amici, familiari e rete personale dei soci","Potenziali partner corporate","Residenti/commercianti della zona","Obiettivo: 80-120 partecipanti","Creare database con: nome, categoria, contatto, RSVP"],
+refs:["Elenco motoclub Milano: cercare su Facebook e siti dedicati"]},
+
+{id:"7.14",s:"marketing",t:"Catering evento",r:"COO",d0:"01/04",d1:"10/04",dp:"7.12",cr:false,w:4,
+desc:"Organizzare il catering per l'evento di inaugurazione. Deve essere coerente con il posizionamento premium.",
+checks:["Aperitivo/brunch di qualità (non fast food)","Finger food, prosecco, birra artigianale, soft drink","Valutare catering esterno vs preparazione in autonomia","Stoviglie: eco-friendly ma di qualità (no plastica)","Eventuali esigenze alimentari (vegano, gluten-free)","Richiedere 2-3 preventivi","Budget: 500-800€ per 100 persone"],
+refs:["Se somministrazione cibi: verificare necessità SCIA temporanea al Comune"]},
+
+{id:"7.15",s:"marketing",t:"Inviti e RSVP",r:"SMM",d0:"30/03",d1:"08/04",dp:"7.13",cr:false,w:4,
+desc:"Inviare gli inviti a tutti i contatti della lista e gestire le conferme di partecipazione.",
+checks:["Design invito digitale coerente con brand identity","Invio via: email personalizzata, DM Instagram, WhatsApp","Per stampa/influencer: invito personalizzato con press kit allegato","Sistema RSVP: Google Form, Eventbrite (free), o semplice risposta email","Follow-up telefonico per invitati VIP (concessionari, partner)","Reminder 2 giorni prima dell'evento","Tracking RSVP aggiornato quotidianamente"],
+refs:["Eventbrite: eventbrite.it (gratuito per eventi gratuiti)"]},
+
+{id:"7.16",s:"marketing",t:"Press kit",r:"SMM + CEO",d0:"01/04",d1:"08/04",dp:"7.1",cr:false,w:4,
+desc:"Preparare un press kit professionale da inviare ai giornalisti e media di settore prima dell'inaugurazione.",
+checks:["Comunicato stampa (1-2 pagine): chi siamo, cosa facciamo, perché siamo unici, quando apriamo","Foto HD del locale, del logo, dei servizi (min. 5 foto, risoluzione stampa)","Scheda tecnica: servizi offerti, prezzi, orari, indirizzo","Bio dei fondatori (2-3 righe ciascuno)","Contatto stampa dedicato (email + telefono)","Tutto in cartella condivisa (Google Drive o Dropbox) con link nel comunicato","Invio a: riviste moto (InMoto, Motociclismo, Dueruote), blog moto, giornali locali Milano"],
+refs:["Riviste target: inmoto.it, motociclismo.it, dueruote.it, moto.it"]},
+
+{id:"7.17",s:"marketing",t:"Identificazione partner premium",r:"CEO",d0:"15/03",d1:"30/03",dp:"—",cr:false,w:1,
+desc:"Identificare potenziali partner commerciali per collaborazioni, co-marketing e partnership corporate previste dal business plan (2.500€/anno per partner).",
+checks:["Concessionari moto premium Milano: BMW Motorrad Milano, Ducati Milano, Triumph Milano","Brand abbigliamento moto: Dainese, Alpinestars, Rev'it","Assicurazioni moto specializzate","Produttori accessori moto premium","Servizi complementari: meccanici specializzati, gommisti moto","Creare pitch di partnership: visibilità nel centro, co-marketing, eventi congiunti","Per ogni potenziale partner: nome, contatto, proposta, valore stimato"],
+refs:["BP: 1 partner corporate anno 1, 2.500€ di ricavo","BP: 2 partner per centro dal 2° anno"]},
+
+{id:"7.18",s:"marketing",t:"Negoziazione partnership",r:"CEO",d0:"25/03",d1:"12/04",dp:"7.17",cr:false,w:3,
+desc:"Contattare i potenziali partner identificati e negoziare accordi di collaborazione.",
+checks:["Preparare proposta di valore per ogni tipo di partner","Contatto iniziale: email + follow-up telefonico","Meeting di presentazione (portare pitch deck e BP)","Definire: cosa offriamo (visibilità, spazio, clientela premium) vs cosa chiediamo (fee, prodotti, co-marketing)","Formalizzare accordi raggiungibili con contratto/lettera di intenti","Almeno 1 partner confermato per l'inaugurazione sarebbe ideale"],
+refs:["Il pitch deck 'Script_X_Pitch.docx' è la base per le presentazioni ai partner"]},
+
+{id:"7.19",s:"marketing",t:"Contatto motoclub",r:"CEO / COO",d0:"20/03",d1:"05/04",dp:"—",cr:false,w:2,
+desc:"Contattare i motoclub della zona Milano per creare relazioni e invitarli all'inaugurazione. I motoclub sono il canale più diretto verso il target.",
+checks:["Ricerca motoclub Milano su Facebook, Instagram, Google","Contatto: email o DM al presidente/referente","Proposta: sconto dedicato ai soci del club, partnership per eventi","Invito all'inaugurazione (prevedere parcheggio moto!)","Valutare: convenzione annuale per i soci del club","I motoclub sono fondamentali per il passaparola nel target premium"],
+refs:["FMI (Federazione Motociclistica Italiana): federmoto.it — elenco associazioni"]},
+
+// === CONTRATTUALISTICA ===
+{id:"8.3",s:"contracts",t:"Contratti lavoro dipendenti",r:"Cons. lavoro",d0:"01/04",d1:"05/04",dp:"5.5",cr:true,w:4,
+desc:"Redigere i contratti individuali di lavoro per i 2 operatori. Vedi dettaglio task 5.7.",
+checks:["Contratto conforme CCNL applicato","Livello e mansione corretti","Informativa D.Lgs. 104/2022 allegata","Informativa privacy allegata","Firma prima dell'inizio del rapporto","Vedi task 5.7 per dettaglio completo"],
+refs:["Vedi riferimenti task 5.7"]},
+
+{id:"8.4",s:"contracts",t:"Contratto SMM freelance",r:"Avvocato",d0:"15/03",d1:"20/03",dp:"—",cr:false,w:1,
+desc:"Contrattualizzare il Social Media Manager come collaboratore freelance con P.IVA.",
+checks:["Contratto di prestazione professionale / collaborazione","Oggetto: gestione social media, creazione contenuti, campagne ads","Compenso: fisso mensile o a progetto","Clausola di riservatezza (NDA)","Proprietà intellettuale: i contenuti creati sono della società","Durata e condizioni di recesso","Consegna asset e credenziali alla cessazione"],
+refs:["Art. 2222 c.c. — Contratto d'opera"]},
+
+{id:"8.5",s:"contracts",t:"Contratto fotografo",r:"Avvocato",d0:"25/03",d1:"01/04",dp:"—",cr:false,w:3,
+desc:"Contrattualizzare il fotografo freelance per il servizio fotografico HD offerto ai clienti.",
+checks:["Contratto di prestazione professionale","Compenso: a servizio fotografico (es. 10€/servizio)","Cessione diritti d'uso delle foto alla società","Diritto della società di utilizzare le foto per marketing (con consenso cliente)","Clausola di qualità minima (standard tecnici)","Tempistiche di consegna foto al cliente","Disponibilità oraria e giorni"],
+refs:["L. 633/1941 — Diritto d'autore (cessione diritti fotografo)"]},
+
+{id:"8.6",s:"contracts",t:"Contratti fornitura prodotti",r:"CEO",d0:"18/03",d1:"25/03",dp:"—",cr:false,w:2,
+desc:"Formalizzare gli accordi con i fornitori di prodotti per il lavaggio e il detailing.",
+checks:["Condizioni di pagamento (30/60/90 giorni, o pagamento immediato con sconto)","Quantità minime d'ordine (MOQ)","Tempi di consegna","Politica resi per prodotti difettosi","Listino prezzi bloccato per X mesi","Eventuali sconti per volumi","Esclusività (da valutare: non vincolarsi troppo all'inizio)"],
+refs:["Consiglio: iniziare con 2-3 fornitori per avere alternative"]},
+
+{id:"8.8",s:"contracts",t:"Contratto sito web e CRM",r:"COO / Avvocato",d0:"12/03",d1:"15/03",dp:"—",cr:false,w:1,
+desc:"Contrattualizzare lo sviluppatore/agenzia per la realizzazione del sito web e del CRM.",
+checks:["Oggetto: sviluppo sito web, sistema prenotazioni, CRM","Tempistiche: consegna entro 01/04","Costo: max 5.000€ come da BP","Milestones di pagamento (es. 30% all'ordine, 40% a metà, 30% a consegna)","Proprietà del codice sorgente: deve restare alla società","SLA per assistenza post-lancio (bug fix, modifiche)","Hosting e dominio: chi li gestisce e paga","Conformità GDPR nel trattamento dati","Penali per ritardo nella consegna"],
+refs:["Consiglio: definire specifiche dettagliate (wireframe) prima di firmare"]},
+
+{id:"8.11",s:"contracts",t:"Contratto smaltimento rifiuti",r:"COO / Tecnico",d0:"25/03",d1:"01/04",dp:"—",cr:false,w:3,
+desc:"Contrattualizzare una ditta autorizzata per lo smaltimento dei rifiuti speciali prodotti dall'attività: oli esausti, fanghi di depurazione, contenitori prodotti chimici.",
+checks:["Individuare ditta autorizzata allo smaltimento rifiuti speciali (autorizzazione regionale)","Tipologie rifiuti: oli esausti (CER 13.02), fanghi depurazione (CER 19.08), imballaggi contaminati","Contratto con: frequenza ritiro, costi per tipologia, documentazione","Predisporre registro di carico e scarico rifiuti (obbligatorio)","Predisporre FIR (Formulario Identificazione Rifiuti) per ogni ritiro","MUD annuale (Modello Unico Dichiarazione ambientale) — il commercialista lo gestisce","Verificare iscrizione Albo Gestori Ambientali della ditta"],
+refs:["D.Lgs. 152/2006, Parte IV — Gestione rifiuti","Albo Gestori Ambientali: albonazionalegestoriambientali.it","Obbligo registro c/s rifiuti: art. 190 D.Lgs. 152/06"]},
+
+{id:"8.12",s:"contracts",t:"Condizioni generali servizio",r:"Avvocato",d0:"01/04",d1:"05/04",dp:"—",cr:false,w:4,
+desc:"Redigere le condizioni generali di servizio che il cliente accetta quando prenota o consegna la moto. Fondamentale per la tutela legale.",
+checks:["Descrizione dei servizi offerti","Limitazione di responsabilità per danni preesistenti (check-in fotografico della moto!)","Procedura di check-in: ispezione congiunta con il cliente e documentazione fotografica","Esclusione responsabilità per oggetti personali lasciati sulla moto","Tempi di servizio e ritardo","Condizioni di pagamento","Politica di cancellazione prenotazioni","Clausola su rinuncia a reclami se danni preesistenti non segnalati al check-in","Esposizione nel locale e sul sito web","Accettazione al momento della prenotazione o consegna della moto"],
+refs:["Art. 1341-1342 c.c. — Condizioni generali di contratto (clausole vessatorie da approvare specificamente)","D.Lgs. 206/2005 — Codice del Consumo"]},
+
+{id:"9.1",s:"ai",t:"Agente AI Booking & Customer Service (WhatsApp + Sito)",r:"COO / Dev",d0:"14/03",d1:"05/04",dp:"6.9",cr:true,w:1,
+desc:"Implementare un agente AI conversazionale che gestisca prenotazioni, domande sui servizi e comunicazioni con i clienti 24/7 via WhatsApp Business e widget sul sito web. Il settore detailing automotive sta adottando massivamente questi strumenti con risultati misurabili: riduzione 80% chiamate non gestite e aumento 30% delle prenotazioni.",
+checks:["Scegliere piattaforma: Tidio AI, ManyChat (per WhatsApp + IG), oppure Voiceflow (piu personalizzabile)","Creare knowledge base: listino prezzi, descrizione servizi, orari, FAQ, policy","Configurare flusso prenotazione: scelta servizio → data/ora → conferma con nome + moto","Integrazione con Google Calendar o sistema prenotazioni del sito","Configurare WhatsApp Business API (necessario numero dedicato)","Widget chatbot sul sito web (pagina Home e Prenota)","Messaggio di benvenuto personalizzato con tone of voice premium","Escalation a operatore umano per richieste complesse","Test completo con scenari reali (prenotazione, domanda prezzi, reclamo)","Training periodico: aggiornare knowledge base quando cambiano servizi/prezzi"],
+refs:["Tidio AI: tidio.com (piano gratuito disponibile, chatbot AI da 29 euro/mese)","ManyChat: manychat.com (automazione WhatsApp + Instagram DM)","Voiceflow: voiceflow.com (builder no-code per agenti AI)","WhatsApp Business API: business.whatsapp.com","Caso studio: agente AI per dealer auto ha gestito 80% chiamate senza transfer umano (Toma AI)"]},
+
+{id:"9.2",s:"ai",t:"Agente AI Social Media Assistant",r:"Social Media Mgr",d0:"18/03",d1:"05/04",dp:"7.1, 7.6",cr:false,w:2,
+desc:"Implementare un tool AI per assistere il Social Media Manager nella creazione di contenuti, programmazione post e analisi performance. L'AI non sostituisce il SMM ma elimina il 60% del lavoro ripetitivo (caption, hashtag, scheduling, resize).",
+checks:["Scegliere tool: SocialBee (AI Copilot ottimo per strategia), oppure Ocoya, oppure FeedHive","Configurare brand kit: logo, colori, font, tone of voice nel tool","Caricare contenuti base: foto locale, servizi, team, prodotti","Configurare posting automatico multi-piattaforma (IG, FB, TikTok, LinkedIn)","AI genera bozze caption che il SMM rivede e approva","Programmazione automatica negli orari di massimo engagement","Riciclo automatico contenuti evergreen (best performer ripubblicati)","Report settimanale automatico su engagement e crescita follower","Costo stimato: 20-50 euro/mese per tool AI social"],
+refs:["SocialBee: socialbee.com (AI Copilot genera intera strategia social)","Ocoya: ocoya.com (AI agent per social + automazioni)","FeedHive: feedhive.com (AI writing assistant + scheduling)","Hootsuite: hootsuite.com (enterprise, piu costoso ma completo)","Budget: rientra nei 7.500 euro/anno marketing digitale del BP"]},
+
+{id:"9.3",s:"ai",t:"Agente AI CRM & Customer Retention",r:"COO / SMM",d0:"25/03",d1:"10/04",dp:"6.10",cr:true,w:3,
+desc:"Configurare automazioni AI nel CRM per massimizzare la retention dei clienti: messaggi personalizzati basati sullo storico, reminder per prossimo lavaggio, offerte di compleanno, programma fedelta intelligente.",
+checks:["Configurare automazioni nel CRM scelto (HubSpot Free o alternativa)","Email automatica post-servizio: ringraziamento + richiesta recensione Google (dopo 24h)","Reminder automatico: 'Sono passati 30 giorni dal tuo ultimo lavaggio' (personalizzato con marca/modello moto)","Offerta compleanno automatica (se data di nascita raccolta)","Segmentazione automatica clienti: frequenza, valore, servizi preferiti","Campagna win-back: clienti inattivi da 60+ giorni ricevono offerta speciale","Scoring clienti: identificare i clienti premium per programma Affiliazione Luxury","Notifica automatica al CEO quando un cliente ad alto valore prenota o non torna","A/B testing automatico su oggetto email e timing"],
+refs:["HubSpot automazioni: hubspot.com/products/marketing/marketing-automation","ActiveCampaign: activecampaign.com (CRM + automazione email avanzata, da 15 euro/mese)","Mailchimp: mailchimp.com (automazioni base gratuite)","KPI target: tasso riacquisto > 40% entro 60 giorni"]},
+
+{id:"9.4",s:"ai",t:"Agente AI Contabilita e Gestione Operativa",r:"Commercialista / CEO",d0:"01/04",d1:"10/04",dp:"6.11",cr:false,w:4,
+desc:"Automatizzare la gestione contabile e operativa quotidiana con strumenti AI: fatturazione automatica, riconciliazione bancaria, alert scadenze, report finanziari.",
+checks:["Scegliere gestionale con AI integrata: Fatture in Cloud (italiano, popolare), oppure Xero, oppure Qonto con integrazione","Fatturazione automatica: generazione fattura al completamento servizio (dal POS/cassa)","Riconciliazione bancaria automatica: match tra movimenti bancari e fatture","Alert automatici: scadenze fiscali (F24, IVA trimestrale, imposte)","Dashboard finanziaria in tempo reale: ricavi, costi, margine, cash flow","Report mensile automatico per i soci (vs budget del BP)","Categorizzazione automatica delle spese","Integrazione con il commercialista (accesso condiviso al gestionale)"],
+refs:["Fatture in Cloud: fattureincloud.it (da 10 euro/mese, gestionale italiano piu diffuso)","Qonto: qonto.com (conto business + gestione spese con AI)","Xero: xero.com (contabilita cloud con AI, piu internazionale)","Nota: il commercialista deve validare la configurazione"]},
+
+{id:"9.5",s:"ai",t:"Agente AI Review & Reputation Management",r:"Social Media Mgr",d0:"07/04",d1:"12/04",dp:"7.11",cr:false,w:5,
+desc:"Implementare un sistema AI per monitorare, analizzare e rispondere alle recensioni online su Google, social media e piattaforme di settore. La reputazione online e fondamentale per un brand premium.",
+checks:["Configurare alert per nuove recensioni Google My Business","Tool AI per suggerire risposte personalizzate (GatherUp, Birdeye, o semplicemente prompt Claude/ChatGPT)","Template di risposta per scenari comuni: recensione positiva, negativa, neutra","Monitoraggio menzioni brand su Instagram e Facebook (Brand24 o Mention)","Report settimanale: sentiment analysis delle recensioni","Strategia proattiva: chiedere recensioni ai clienti soddisfatti (via email automatica post-servizio, task 9.3)","Obiettivo: 50+ recensioni Google entro 3 mesi dall'apertura, rating > 4.5"],
+refs:["Brand24: brand24.com (monitoraggio menzioni, sentiment AI, da 79 dollari/mese)","GatherUp: gatherup.com (gestione recensioni con AI)","Alternativa economica: Google Alerts gratuito + risposta manuale assistita da AI","Statistiche: 93% dei consumatori legge recensioni online prima di scegliere un servizio locale"]},
+
+{id:"9.6",s:"ai",t:"AI per Check-in Fotografico Automatizzato",r:"COO / Dev",d0:"01/04",d1:"10/04",dp:"6.4",cr:false,w:4,
+desc:"Creare un sistema di check-in fotografico con AI che documenta lo stato della moto prima del servizio: l'operatore scatta foto con iPad, l'AI identifica e cataloga eventuali graffi, ammaccature o danni preesistenti. Questo protegge legalmente il centro e migliora l'esperienza cliente.",
+checks:["Configurare iPad con app per foto strutturate (foto standard: fronte, retro, lato DX, lato SX, serbatoio, dettagli)","Valutare tool AI di visual inspection (Google Cloud Vision API, o app specializzate)","In alternativa semplice: template foto standard con annotazioni manuali","Archiviazione cloud automatica collegata al cliente nel CRM","Generazione automatica report check-in con foto (PDF o link) inviato al cliente via WhatsApp","Confronto automatico check-in vs check-out per documentare il lavoro svolto","Questo sistema e fondamentale per: tutela legale (task 8.12) e valore percepito dal cliente"],
+refs:["Google Cloud Vision API: cloud.google.com/vision (riconoscimento difetti, da analizzare fattibilita)","Alternativa low-tech: app come Hail Check o iAuditor per ispezioni strutturate","Questo workflow diventa un asset prezioso per il franchising: procedura standardizzata replicabile"]},
+
+{id:"9.7",s:"ai",t:"AI Analytics & Business Intelligence",r:"CEO / Commercialista",d0:"07/04",d1:"12/04",dp:"6.11, 6.10",cr:false,w:5,
+desc:"Configurare una dashboard di business intelligence con analisi AI che aggreghi dati da CRM, cassa, social e Google Analytics per fornire insight operativi e strategici in tempo reale.",
+checks:["Scegliere tool: Google Looker Studio (gratuito) o Databox o Geckoboard","Collegare fonti dati: sistema cassa (ricavi giornalieri), CRM (clienti, prenotazioni), Google Analytics (traffico sito), Meta Ads (performance campagne)","Dashboard con KPI chiave: ricavi vs budget BP, numero lavaggi/giorno, ticket medio, tasso conversione prenotazioni, costo acquisizione cliente","Alert automatici: se ricavi settimanali sotto target, notifica al CEO","Analisi predittiva: trend stagionali, giorni di picco, servizi piu richiesti","Report automatico mensile inviato via email ai soci","Confronto actual vs business plan (i numeri del BP sono gia nel sistema)"],
+refs:["Google Looker Studio: lookerstudio.google.com (gratuito, potente)","Databox: databox.com (dashboard KPI, piano gratuito disponibile)","I dati del BP sono la baseline: 152.938 euro ricavi anno 1, 2.500 clienti lavaggio, ticket medio 45-55 euro"]}
+
+];
+
+// STATE
+let tasks,statuses,notes,checks,view="mappa",fSec="all",fWk=0,fSt="all",fCr=false,fSrch="",selected=null,modal=null,mapOpen=null,teamOpen=null,teamModal=null,pmComment="",budgetSpent={};
+
+
+var INIT_TEAM=[
+{id:"t1",name:"CEO (Socio 1)",role:"Chief Executive Officer",type:"soc",cost:"30.000/anno",costNote:"Come da BP",avatar:"#1B365D",aliases:["CEO","CEO + COO","CEO + Broker","CEO + SMM"]},
+{id:"t2",name:"COO (Socio 2)",role:"Chief Operating Officer",type:"soc",cost:"21.000/anno",costNote:"Come da BP",avatar:"#8B4513",aliases:["COO","COO / PM","COO / Avvocato","COO / Dev","COO / Tecnico"]},
+{id:"t3",name:"Project Manager",role:"Coordinamento esterno",type:"cons",cost:"Da definire",costNote:"Figura esterna",avatar:"#C49A2A",aliases:["PM","PM + CEO","PM + Tecnico"]},
+{id:"t4",name:"Commercialista",role:"Consulente fiscale e contabile",type:"cons",cost:"5.000/anno",costNote:"Come da BP",avatar:"#2E8B57",aliases:["Commercialista","Tecnico + Comm."]},
+{id:"t5",name:"Avvocato",role:"Consulente legale (societario + IP)",type:"cons",cost:"3.000 (avvio)",costNote:"Come da BP per consulenza legale",avatar:"#B22222",aliases:["Avvocato","Avvocato IP","Avv. + Comm.","Soci + Avvocato"]},
+{id:"t6",name:"Notaio",role:"Atto costitutivo SRL",type:"cons",cost:"~2.000",costNote:"Atto + imposte registro",avatar:"#4169E1",aliases:["Notaio","Soci + Notaio"]},
+{id:"t7",name:"Social Media Manager",role:"Marketing digitale e contenuti",type:"free",cost:"18.000/anno",costNote:"Come da BP",avatar:"#DB7093",aliases:["Social Media Mgr","SMM","SMM + CEO"]},
+{id:"t8",name:"Graphic Designer",role:"Brand identity e materiali",type:"free",cost:"Incluso nei 2.500 pubblicita",costNote:"Costi capitalizzabili BP",avatar:"#6A5ACD",aliases:["Graphic Designer"]},
+{id:"t9",name:"Operatore 1",role:"Operatore centro lavaggio (senior)",type:"dip",cost:"24.000/anno",costNote:"Come da BP",avatar:"#4169E1",aliases:["Operatore 1"]},
+{id:"t10",name:"Operatore 2",role:"Operatore centro lavaggio (junior)",type:"dip",cost:"18.000/anno",costNote:"Come da BP",avatar:"#4169E1",aliases:["Operatore 2"]},
+{id:"t11",name:"Geometra/Ingegnere",role:"Tecnico edile e autorizzazioni",type:"cons",cost:"Incluso nei 15.000 manut.",costNote:"",avatar:"#8B4513",aliases:["Geometra","PM + Tecnico","Tecnico"]},
+{id:"t12",name:"Tecnico Ambientale",role:"AUA e impianto depurazione",type:"cons",cost:"Incluso nei costi consulenza",costNote:"",avatar:"#B22222",aliases:["Tecnico ambientale","Tecnico acustico"]},
+{id:"t13",name:"Consulente del Lavoro",role:"Contratti e buste paga",type:"cons",cost:"~1.500/anno",costNote:"",avatar:"#008B8B",aliases:["Consulente lavoro","Cons. lavoro"]},
+{id:"t14",name:"RSPP / Consulente Sicurezza",role:"Sicurezza e DVR",type:"cons",cost:"~1.000",costNote:"",avatar:"#2E8B57",aliases:["RSPP / Consulente","RSPP / Ente form."]},
+{id:"t15",name:"Broker Assicurativo",role:"Polizze",type:"cons",cost:"Commissione su polizze",costNote:"",avatar:"#f59e0b",aliases:["CEO + Broker"]},
+];
+
+
+var BUDGET_BP={
+  ip:{label:"Proprietà Intellettuale",planned:6000,note:"Marchio, consulenza legale, capitalizzabili"},
+  srl:{label:"Costituzione SRL",planned:9000,note:"Notaio, commercialista, consulenze"},
+  locale:{label:"Locale & Impianti",planned:33000,note:"Manut. straordinaria + impianti"},
+  auth:{label:"Autorizzazioni",planned:3000,note:"AUA, SCIA, VVF, consulenze tecniche"},
+  insurance:{label:"Assicurazioni & Sicurezza",planned:6500,note:"Polizze + DPI + formazione + DVR"},
+  hr:{label:"Risorse Umane",planned:42000,note:"2 operatori (prorata 9 mesi)"},
+  supply:{label:"Forniture & Tech",planned:13000,note:"Attrezzatura + sito + CRM + POS"},
+  marketing:{label:"Marketing & Lancio",planned:12500,note:"Ads, stampa, evento, influencer"},
+  contracts:{label:"Contrattualistica",planned:2000,note:"Consulenze legali contratti"},
+  ai:{label:"Agenti AI",planned:3000,note:"Tool AI anno 1 (chatbot, social, CRM)"}
+};
+
+function load(){
+  try{
+    const d=JSON.parse(localStorage.getItem("mec-v3")||"{}");
+    tasks=d.tasks||JSON.parse(JSON.stringify(INIT_TASKS));team=d.team||JSON.parse(JSON.stringify(INIT_TEAM));pmComment=d.pmComment||"";budgetSpent=d.budgetSpent||{};
+    statuses=d.statuses||{};
+    notes=d.notes||{};
+    checks=d.checks||{};
+  }catch(e){tasks=JSON.parse(JSON.stringify(INIT_TASKS));statuses={};notes={};checks={};team=JSON.parse(JSON.stringify(INIT_TEAM));pmComment="";budgetSpent={};}
+}
+function save(){try{localStorage.setItem("mec-v3",JSON.stringify({tasks,statuses,notes,checks,team,pmComment,budgetSpent}));}catch(e){}}
+load();
+
+
+function isOverdue(t){
+  var pp=(t.d1||"").split("/");
+  if(pp.length!==2)return false;
+  var ed=new Date(2026,parseInt(pp[1])-1,parseInt(pp[0]));
+  return ed<new Date()&&gSt(t.id)!=="done";
+}
+function getWeekNum(){
+  var now=new Date(),sd=new Date(2026,2,10);
+  var diff=Math.floor((now-sd)/(7*864e5))+1;
+  return Math.max(1,Math.min(diff,5));
+}
+function getTimePct(){
+  var now=new Date(),sd=new Date(2026,2,10),ed=new Date(2026,3,12);
+  if(now<sd)return 0;if(now>ed)return 100;
+  return Math.round((now-sd)/(ed-sd)*100);
+}
+
+function gSec(id){return SECS.find(s=>s.id===id)}
+function gSt(id){return statuses[id]||"todo"}
+function gStO(v){return STS.find(s=>s.v===v)}
+
+function filt(){
+  return tasks.filter(t=>{
+    if(fSec!=="all"&&t.s!==fSec)return false;
+    if(fWk>0&&t.w!==fWk)return false;
+    if(fSt!=="all"&&gSt(t.id)!==fSt)return false;
+    if(fCr&&!t.cr)return false;
+    if(fSrch){const q=fSrch.toLowerCase();if(!t.t.toLowerCase().includes(q)&&!t.r.toLowerCase().includes(q)&&!t.id.includes(q)&&!(t.desc||"").toLowerCase().includes(q))return false;}
+    return true;
+  });
+}
+
+function stats(){
+  const tot=tasks.length,done=tasks.filter(t=>gSt(t.id)==="done").length,prog=tasks.filter(t=>gSt(t.id)==="progress").length,blk=tasks.filter(t=>gSt(t.id)==="blocked").length;
+  const crT=tasks.filter(t=>t.cr).length,crD=tasks.filter(t=>t.cr&&gSt(t.id)==="done").length;
+  const bS={},bW={};
+  SECS.forEach(s=>{const st=tasks.filter(t=>t.s===s.id);bS[s.id]={t:st.length,d:st.filter(t=>gSt(t.id)==="done").length};});
+  WKS.forEach(w=>{const wt=tasks.filter(t=>t.w===w.id);bW[w.id]={t:wt.length,d:wt.filter(t=>gSt(t.id)==="done").length};});
+  return{tot,done,prog,blk,todo:tot-done-prog-blk,crT,crD,bS,bW};
+}
+
+function exportCSV(){
+  let csv="\uFEFF"+"ID;Task;Area;Responsabile;Inizio;Fine;Settimana;Critico;Stato;Note\n";
+  tasks.forEach(t=>{const sec=gSec(t.s);const st=gStO(gSt(t.id));
+    csv+=`"${t.id}";"${(t.t||'').replace(/"/g,'""')}";"${sec?sec.l:''}";"${t.r}";"${t.d0}";"${t.d1}";"${WKS.find(w=>w.id===t.w)?.l||''}";"${t.cr?'Sì':'No'}";"${st?st.l:''}";"${(notes[t.id]||'').replace(/"/g,'""')}"\n`;
+  });
+  const b=new Blob([csv],{type:"text/csv;charset=utf-8;"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="MotoEliteCare_Report_"+new Date().toISOString().slice(0,10)+".csv";a.click();
+}
+
+function h(tag,at,...ch){
+  const el=document.createElement(tag);
+  if(at)Object.entries(at).forEach(([k,v])=>{
+    if(k.startsWith("on"))el.addEventListener(k.slice(2).toLowerCase(),v);
+    else if(k==="style"&&typeof v==="object")Object.assign(el.style,v);
+    else if(k==="className")el.className=v;
+    else if(k==="checked")el.checked=v;
+    else if(k==="value")el.value=v;
+    else if(k==="selected")el.selected=v;
+    else el.setAttribute(k,v);
+  });
+  ch.flat(9).forEach(c=>{if(c!=null)el.append(typeof c==="string"?document.createTextNode(c):c);});
+  return el;
+}
+
+function mkSel(cls,cur,opts,fn){
+  const s=h("select",{className:cls,onChange:e=>fn(e.target.value)});
+  opts.forEach(([v,l])=>{const o=h("option",{value:v},l);if(cur===v)o.selected=true;s.append(o);});
+  return s;
+}
+
+function mkSVG(pct){
+  const ns="http://www.w3.org/2000/svg",svg=document.createElementNS(ns,"svg");
+  svg.setAttribute("viewBox","0 0 36 36");svg.style.cssText="width:80px;height:80px;transform:rotate(-90deg)";
+  const c1=document.createElementNS(ns,"circle");[["cx","18"],["cy","18"],["r","15.5"],["fill","none"],["stroke","#1e293b"],["stroke-width","2.5"]].forEach(([a,v])=>c1.setAttribute(a,v));
+  const c2=document.createElementNS(ns,"circle");[["cx","18"],["cy","18"],["r","15.5"],["fill","none"],["stroke","#C49A2A"],["stroke-width","2.5"],["stroke-dasharray",pct*.974+" 100"],["stroke-linecap","round"]].forEach(([a,v])=>c2.setAttribute(a,v));
+  svg.append(c1,c2);return svg;
+}
+
+// ===== RENDER =====
+function render(){
+  const app=document.getElementById("app");app.innerHTML="";
+  const st=stats(),pct=st.tot>0?Math.round(st.done/st.tot*100):0,ft=filt();
+
+  // HEADER
+  app.append(h("div",{className:"hd"},
+    h("div",{className:"hd-top"},
+      h("div",{className:"brand"},h("h1",null,"MOTO ÉLITE CARE"),h("p",null,"PIANO OPERATIVO — DEADLINE 12 APRILE 2026")),
+      h("div",{className:"ring-area"},
+        h("div",{className:"ring-pct"},h("div",{className:"num"},pct+"%"),h("div",{className:"lbl"},"completato")),
+        h("div",{className:"ring"},mkSVG(pct),h("div",{className:"ring-in"},h("span",{className:"n"},st.done+"/"+st.tot),h("span",{className:"l"},"task")))
+      )
+    ),
+    h("div",{className:"sts"},
+      ...[{l:"Da fare",n:st.todo,c:"#94a3b8"},{l:"In corso",n:st.prog,c:"#f59e0b"},{l:"Bloccati",n:st.blk,c:"#ef4444"},{l:"Completati",n:st.done,c:"#22c55e"},{l:"Critici rimasti",n:st.crT-st.crD,c:"#ff6b6b"}].map(x=>
+        h("div",{className:"st"},h("div",{className:"dot",style:{background:x.c}}),x.l+" ",h("span",{className:"v",style:{color:x.c}},String(x.n))))
+    )
+  ));
+
+  // FILTERS
+  app.append(h("div",{className:"fl"},
+    h("div",{style:{display:"flex",background:"var(--cd)",borderRadius:"6px",overflow:"hidden",marginRight:"4px"}},["mappa","team","list","gantt"].map(function(vv){return h("button",{style:{padding:"4px 10px",fontSize:"10px",background:view===vv?"var(--gd)":"transparent",color:view===vv?"var(--bg)":"var(--t2)",border:"none",cursor:"pointer",fontFamily:"inherit",fontWeight:view===vv?600:400},onClick:function(){view=vv;
+// Test localStorage on startup
+try{localStorage.setItem("mec-test","1");localStorage.removeItem("mec-test");console.log("localStorage OK");}catch(e){console.warn("localStorage non disponibile, usa Salva/Carica file");}
+
+render();}},vv==="mappa"?"Mappa":vv==="team"?"Team":vv==="list"?"Lista":"Timeline")})),h("input",{className:"si",placeholder:"🔍 Cerca...",value:fSrch,onInput:e=>{fSrch=e.target.value;render();}}),
+    mkSel("fsel",fSec,[["all","Tutte le aree"],...SECS.map(s=>[s.id,s.i+" "+s.l])],v=>{fSec=v;render();}),
+    mkSel("fsel",String(fWk),[["0","Tutte le settimane"],...WKS.map(w=>[String(w.id),w.l])],v=>{fWk=+v;render();}),
+    mkSel("fsel",fSt,[["all","Tutti gli stati"],...STS.map(s=>[s.v,s.l])],v=>{fSt=v;render();}),
+    h("button",{className:"fbtn"+(fCr?" on":""),onClick:()=>{fCr=!fCr;render();}},"🔴 Critici"),
+    h("button",{className:"abtn",onClick:()=>{modal={id:"",s:"ip",t:"",r:"",d0:"",d1:"",dp:"—",cr:false,w:1,desc:"",checks:[],refs:[]};render();}},"＋ Nuovo"),
+    h("button",{style:{background:"var(--cd)",border:"1px solid var(--gd)",borderRadius:"6px",padding:"4px 9px",fontSize:"10px",color:"var(--gd)",cursor:"pointer",fontFamily:"inherit"},onClick:function(){
+  var overlay=document.createElement("div");overlay.className="rpt-bg";
+  overlay.addEventListener("click",function(e){if(e.target===overlay)overlay.remove();});
+  var box=document.createElement("div");box.style.cssText="background:var(--cd);border-radius:10px;padding:18px;width:100%;max-width:500px;border:1px solid var(--bd)";
+  box.addEventListener("click",function(e){e.stopPropagation();});
+  box.innerHTML='<h2 style="font-family:Playfair Display,serif;font-size:16px;color:#C49A2A;margin-bottom:12px">Nota del Project Manager</h2><p style="font-size:10px;color:#94a3b8;margin-bottom:8px">Scrivi il tuo commento settimanale. Apparirà nel Report CEO.</p>';
+  var ta=document.createElement("textarea");ta.style.cssText="width:100%;min-height:120px;background:#0a0f1c;border:1px solid #334155;border-radius:6px;padding:10px;color:#e2e8f0;font-size:12px;font-family:DM Sans,sans-serif;outline:none;resize:vertical";
+  ta.value=pmComment;ta.placeholder="Es: Questa settimana abbiamo completato la costituzione della SRL e avviato i lavori al locale. Il rischio AUA resta il punto critico...";
+  box.append(ta);
+  var btns=document.createElement("div");btns.style.cssText="display:flex;gap:6px;margin-top:12px;justify-content:flex-end";
+  var cancelBtn=document.createElement("button");cancelBtn.style.cssText="padding:6px 14px;border-radius:5px;font-size:10px;background:transparent;border:1px solid #334155;color:#94a3b8;cursor:pointer;font-family:inherit";cancelBtn.textContent="Annulla";cancelBtn.addEventListener("click",function(){overlay.remove();});
+  var saveBtn=document.createElement("button");saveBtn.style.cssText="padding:6px 14px;border-radius:5px;font-size:10px;background:#C49A2A;border:none;color:#0a0f1c;font-weight:600;cursor:pointer;font-family:inherit";saveBtn.textContent="Salva";saveBtn.addEventListener("click",function(){pmComment=ta.value;save();overlay.remove();});
+  btns.append(cancelBtn,saveBtn);box.append(btns);
+  overlay.append(box);document.body.append(overlay);
+}},"📝 Nota PM"),h("button",{style:{background:"var(--cd)",border:"1px solid #2E8B57",borderRadius:"6px",padding:"4px 9px",fontSize:"10px",color:"#2E8B57",cursor:"pointer",fontFamily:"inherit"},onClick:function(){
+  var overlay=document.createElement("div");overlay.className="rpt-bg";
+  overlay.addEventListener("click",function(e){if(e.target===overlay)overlay.remove();});
+  var box=document.createElement("div");box.style.cssText="background:#1e293b;border-radius:10px;padding:18px;width:100%;max-width:520px;max-height:85vh;overflow-y:auto;border:1px solid #334155";
+  box.addEventListener("click",function(e){e.stopPropagation();});
+  box.innerHTML='<h2 style="font-family:Playfair Display,serif;font-size:16px;color:#C49A2A;margin-bottom:12px">💰 Tracking Budget</h2><p style="font-size:10px;color:#94a3b8;margin-bottom:10px">Inserisci quanto speso per area. I dati appariranno nel Report CEO.</p>';
+  var tbl=document.createElement("div");
+  Object.keys(BUDGET_BP).forEach(function(k){
+    var b=BUDGET_BP[k];var row=document.createElement("div");row.style.cssText="display:flex;align-items:center;gap:8px;margin-bottom:6px;padding:6px;background:#0f172a;border-radius:6px";
+    row.innerHTML='<span style="flex:1;font-size:11px;color:#e2e8f0">'+b.label+'</span><span style="font-size:10px;color:#64748b;width:70px;text-align:right">€ '+b.planned.toLocaleString("it-IT")+'</span>';
+    var inp=document.createElement("input");inp.type="number";inp.style.cssText="width:90px;background:#1e293b;border:1px solid #334155;border-radius:4px;padding:4px 6px;color:#e2e8f0;font-size:11px;font-family:DM Sans,sans-serif;outline:none;text-align:right";
+    inp.value=budgetSpent[k]||0;inp.placeholder="Speso";
+    inp.dataset.key=k;
+    row.append(inp);tbl.append(row);
+  });
+  box.append(tbl);
+  var btns=document.createElement("div");btns.style.cssText="display:flex;gap:6px;margin-top:12px;justify-content:flex-end";
+  var cancelBtn=document.createElement("button");cancelBtn.style.cssText="padding:6px 14px;border-radius:5px;font-size:10px;background:transparent;border:1px solid #334155;color:#94a3b8;cursor:pointer;font-family:inherit";cancelBtn.textContent="Annulla";cancelBtn.addEventListener("click",function(){overlay.remove();});
+  var saveBtn=document.createElement("button");saveBtn.style.cssText="padding:6px 14px;border-radius:5px;font-size:10px;background:#2E8B57;border:none;color:#fff;font-weight:600;cursor:pointer;font-family:inherit";saveBtn.textContent="Salva";saveBtn.addEventListener("click",function(){
+    tbl.querySelectorAll("input").forEach(function(inp2){budgetSpent[inp2.dataset.key]=parseFloat(inp2.value)||0;});
+    save();overlay.remove();
+  });
+  btns.append(cancelBtn,saveBtn);box.append(btns);
+  overlay.append(box);document.body.append(overlay);
+}},"💰 Budget"),h("button",{style:{background:"#1B365D",color:"#fff",border:"none",borderRadius:"6px",padding:"4px 10px",fontSize:"10px",fontWeight:"600",cursor:"pointer",fontFamily:"inherit"},onClick:showReport},"📄 Report CEO"),h("button",{className:"xbtn",onClick:exportCSV},"📥 CSV"),
+    h("button",{style:{background:"transparent",border:"1px solid #22c55e",borderRadius:"6px",padding:"4px 8px",color:"#22c55e",fontSize:"9px",cursor:"pointer",fontFamily:"inherit"},onClick:saveToFile},"💾 Salva"),h("button",{style:{background:"transparent",border:"1px solid #3b82f6",borderRadius:"6px",padding:"4px 8px",color:"#3b82f6",fontSize:"9px",cursor:"pointer",fontFamily:"inherit"},onClick:loadFromFile},"📂 Carica"),h("button",{className:"rbtn",onClick:()=>{if(confirm("Reset completo?")){tasks=JSON.parse(JSON.stringify(INIT_TASKS));statuses={};notes={};checks={};team=JSON.parse(JSON.stringify(INIT_TEAM));pmComment="";budgetSpent={};save();render();}}},"⟲ Reset")
+  ));
+
+  // MAIN: LIST + DETAIL PANEL
+  const wrap=h("div",{className:"main-wrap"});
+  const list=h("div",{className:"task-list"});
+  const panel=h("div",{className:"detail-panel"+(selected?" open":"")});
+
+  // Render list
+  if(view==="gantt"){rGantt(list,ft);}else if(view==="mappa"){rMappa(list,ft);}else if(view==="team"){rTeam(list,ft);}else{
+const grp={};
+  ft.forEach(t=>{if(!grp[t.s])grp[t.s]={sec:gSec(t.s),tasks:[]};grp[t.s].tasks.push(t);});
+  Object.values(grp).forEach(g=>{
+    list.append(h("div",{className:"lg-t",style:{color:g.sec.c}},g.sec.i+" "+g.sec.l,h("span",{className:"cn"},"("+g.tasks.length+")")));
+    g.tasks.forEach(t=>{
+      const so=gStO(gSt(t.id));var _od=isOverdue(t);
+      const row=h("div",{className:"lr"+(selected===t.id?" sel":""),onClick:()=>{selected=t.id;render();}});
+      row.append(h("div",{className:"lr-m",style:{background:_od?"rgba(239,68,68,.06)":"transparent"}},
+        h("div",{className:"dot",style:{background:_od?"#ef4444":so.c}}),
+        h("span",{className:"id",style:{color:g.sec.c}},t.id),
+        h("span",{className:"cr"},t.cr?"⚡":""),
+        h("span",{className:"tk",style:{color:_od?"#fca5a5":"var(--tx)"}},(_od?"⚠ ":"")+t.t),
+        h("span",{className:"rp"},t.r),
+        h("span",{className:"dt"},t.d0+"→"+t.d1),
+        (()=>{const sel=h("select",{style:{background:so.bg,color:so.c},onClick:e=>e.stopPropagation(),onChange:e=>{e.stopPropagation();statuses[t.id]=e.target.value;save();render();}});
+          STS.forEach(s=>{const o=h("option",{value:s.v},s.l);if(gSt(t.id)===s.v)o.selected=true;sel.append(o);});return sel;})()
+      ));
+      list.append(row);
+    });
+  });
+  if(ft.length===0)list.append(h("div",{className:"empty"},"Nessun task con questi filtri"));
+}
+
+  // Render detail panel
+  if(selected){
+    const t=tasks.find(x=>x.id===selected);
+    if(t){
+      const sec=gSec(t.s),so=gStO(gSt(t.id));
+      panel.append(
+        h("div",{className:"dp-hd"},
+          h("span",{className:"dp-id",style:{color:sec?sec.c:"#666",background:(sec?sec.c:"#666")+"18"}},t.id),
+          t.cr?h("span",{className:"dp-cr"},"⚡ CRITICO"):null,
+          h("span",{style:{marginLeft:"auto",fontSize:"10px",color:"var(--t3)",cursor:"pointer"},onClick:()=>{selected=null;render();}},"✕ Chiudi")
+        ),
+        h("div",{className:"dp-title"},t.t)
+      );
+
+      // Status buttons
+      const sb=h("div",{className:"dp-sbtns"});
+      STS.forEach(s=>{sb.append(h("button",{style:{background:gSt(t.id)===s.v?s.c:"var(--cd)",color:gSt(t.id)===s.v?"var(--bg)":"var(--t2)",borderColor:s.c+"66",fontWeight:gSt(t.id)===s.v?700:400},onClick:()=>{statuses[t.id]=s.v;save();render();}},s.l));});
+      panel.append(sb);
+
+      // DESCRIPTION
+      if(t.desc){
+        const ds=h("div",{className:"dp-section"});
+        ds.append(h("div",{className:"dp-section-title"},"Cosa fare"));
+        ds.append(h("div",{className:"dp-desc"},t.desc));
+        panel.append(ds);
+      }
+
+      // CHECKLIST
+      if(t.checks&&t.checks.length>=0){
+        const cs=h("div",{className:"dp-section"});
+        var cksDone=(checks[t.id]||[]).filter(Boolean).length;
+        cs.append(h("div",{className:"dp-section-title",style:{display:"flex",justifyContent:"space-between",alignItems:"center"}},"Checklist ("+cksDone+"/"+t.checks.length+")",h("button",{style:{background:"var(--gd)",color:"var(--bg)",border:"none",borderRadius:"3px",padding:"2px 8px",fontSize:"9px",fontWeight:"600",cursor:"pointer",fontFamily:"inherit"},onClick:function(){t.checks.push("Nuova voce");save();render();}},"+ Aggiungi")));
+        t.checks.forEach(function(ck,i){
+          var cks=checks[t.id]||[];
+          var chk=h("div",{style:{display:"flex",alignItems:"flex-start",gap:"5px",marginBottom:"4px"}});
+          var inp=h("input",{type:"checkbox",style:{marginTop:"4px",flexShrink:"0",cursor:"pointer"},checked:!!cks[i],onChange:function(){
+            if(!checks[t.id])checks[t.id]=[];
+            checks[t.id][i]=!checks[t.id][i];
+            save();render();
+          }});
+          var txt=h("input",{type:"text",value:ck,style:{flex:"1",background:"transparent",border:"none",borderBottom:"1px solid transparent",color:cks[i]?"var(--t3)":"var(--tx)",fontSize:"11px",fontFamily:"inherit",outline:"none",textDecoration:cks[i]?"line-through":"none",padding:"2px 0",minWidth:"0"},onFocus:function(e){e.target.style.borderBottomColor="var(--gd)";},onBlur:function(e){e.target.style.borderBottomColor="transparent";},onChange:function(e){t.checks[i]=e.target.value;save();}});
+          var del=h("button",{style:{background:"transparent",border:"none",color:"var(--t3)",fontSize:"12px",cursor:"pointer",padding:"0 2px",flexShrink:"0",lineHeight:"1"},onClick:function(){t.checks.splice(i,1);if(checks[t.id]){checks[t.id].splice(i,1);}save();render();}},"×");
+          chk.append(inp,txt,del);
+          cs.append(chk);
+        });
+        panel.append(cs);
+      }
+
+      // REFERENCES
+      if(t.refs&&t.refs.length){
+        const rs=h("div",{className:"dp-section"});
+        rs.append(h("div",{className:"dp-section-title"},"Riferimenti"));
+        t.refs.forEach(r=>{
+          const isUrl=r.includes("http")||r.includes(".it")||r.includes(".com")||r.includes(".gov")||r.includes(".eu");
+          rs.append(h("div",{className:"dp-ref"},isUrl?h("span",null,"🔗 "+r):h("span",null,"📎 "+r)));
+        });
+        panel.append(rs);
+      }
+
+      // META / EDIT
+      const meta=h("div",{className:"dp-section"});
+      meta.append(h("div",{className:"dp-section-title"},"Dettagli task"));
+      meta.append(h("div",{className:"dp-field"},h("label",null,"Responsabile"),h("input",{value:t.r,onChange:e=>{t.r=e.target.value;save();render();}})));
+      meta.append(h("div",{style:{display:"flex",gap:"6px"}},
+        h("div",{className:"dp-field",style:{flex:1}},h("label",null,"Inizio"),h("input",{value:t.d0,onChange:e=>{t.d0=e.target.value;save();render();}})),
+        h("div",{className:"dp-field",style:{flex:1}},h("label",null,"Fine"),h("input",{value:t.d1,onChange:e=>{t.d1=e.target.value;save();render();}}))
+      ));
+      meta.append(h("div",{className:"dp-field"},h("label",null,"Area"),
+        (()=>{const sel=h("select",{onChange:e=>{t.s=e.target.value;save();render();}});
+          SECS.forEach(s=>{const o=h("option",{value:s.id},s.i+" "+s.l);if(t.s===s.id)o.selected=true;sel.append(o);});return sel;})()
+      ));
+      meta.append(h("div",{className:"dp-field"},h("label",null,"Settimana"),
+        (()=>{const sel=h("select",{onChange:e=>{t.w=parseInt(e.target.value);save();render();}});
+          WKS.forEach(w=>{const o=h("option",{value:String(w.id)},w.l+" ("+w.d+")");if(t.w===w.id)o.selected=true;sel.append(o);});return sel;})()
+      ));
+      meta.append(h("div",{className:"dp-field"},h("label",null,"Dipendenze"),h("input",{value:t.dp,onChange:e=>{t.dp=e.target.value;save();}})));
+      meta.append(h("div",{className:"dp-field",style:{display:"flex",alignItems:"center",gap:"6px"}},
+        h("input",{type:"checkbox",checked:t.cr,onChange:e=>{t.cr=e.target.checked;save();render();}}),
+        h("label",{style:{margin:0,color:"var(--yl)"}},"⚡ Task critico")
+      ));
+      panel.append(meta);
+
+      // NOTES
+      const ns=h("div",{className:"dp-section"});
+      ns.append(h("div",{className:"dp-section-title"},"Note personali"));
+      const ta=h("textarea",{className:"dp-field",placeholder:"Scrivi note, aggiornamenti, contatti...",value:notes[t.id]||"",style:{width:"100%",background:"var(--cd)",border:"1px solid var(--bd)",borderRadius:"4px",padding:"6px",color:"var(--tx)",fontSize:"11px",fontFamily:"inherit",minHeight:"60px",resize:"vertical",outline:"none"}});
+      ta.addEventListener("input",e=>{notes[t.id]=e.target.value;save();});
+      ns.append(ta);
+      panel.append(ns);
+
+      // DELETE
+      panel.append(h("button",{className:"dp-del",onClick:()=>{if(confirm("Eliminare "+t.id+"?")){tasks=tasks.filter(x=>x.id!==t.id);delete statuses[t.id];delete notes[t.id];delete checks[t.id];selected=null;save();render();}}},"🗑 Elimina questo task"));
+    }
+  }else{
+    panel.append(h("div",{style:{textAlign:"center",padding:"40px 20px",color:"var(--t3)"}},
+      h("div",{style:{fontSize:"32px",marginBottom:"10px"}},"👈"),
+      h("div",{style:{fontSize:"12px"}},"Seleziona un task dalla lista per vederne il dettaglio, la checklist e i riferimenti")
+    ));
+    panel.classList.add("open");
+  }
+
+  wrap.append(list,panel);
+  app.append(wrap);
+
+  // PROGRESS
+  app.append(h("div",{className:"ps"},
+    h("h3",null,"Progresso per Area"),
+    h("div",{className:"pg"},
+      ...SECS.map(s=>{const d=st.bS[s.id]||{t:0,d:0};const p=d.t>0?Math.round(d.d/d.t*100):0;
+        return h("div",{className:"pc",style:{borderLeft:"3px solid "+s.c},onClick:()=>{fSec=s.id;render();}},
+          h("div",{className:"pc-t"},h("span",{className:"nm"},s.i+" "+s.l),h("span",{className:"pt",style:{color:s.c}},p+"%")),
+          h("div",{className:"pc-b"},h("div",{className:"pc-bf",style:{width:p+"%",background:s.c}})),
+          h("div",{className:"pc-s"},d.d+"/"+d.t)
+        );})
+    )
+  ));
+
+  // MODAL
+  
+  if(teamModal){
+    var tmbg=h("div",{className:"rpt-bg",onClick:function(e){if(e.target===tmbg){teamModal=null;render();}}});
+    var tmm=h("div",{className:"tm-modal",onClick:function(e){e.stopPropagation();}});
+    var isEdit=teamModal._edit;
+    tmm.append(h("h2",null,isEdit?"Modifica Membro":"Nuovo Membro del Team"));
+    var tmf=h("div",{className:"tmf"});
+    tmf.append(h("label",null,"Nome"),h("input",{value:teamModal.name||"",onInput:function(e){teamModal.name=e.target.value;}}));
+    tmf.append(h("label",null,"Ruolo"),h("input",{value:teamModal.role||"",onInput:function(e){teamModal.role=e.target.value;}}));
+    var tsel=h("select",{onChange:function(e){teamModal.type=e.target.value;}});
+    [{v:"dip",l:"Dipendente"},{v:"free",l:"Freelance"},{v:"cons",l:"Consulente"},{v:"soc",l:"Socio"}].forEach(function(o){var opt=h("option",{value:o.v},o.l);if(teamModal.type===o.v)opt.selected=true;tsel.append(opt);});
+    tmf.append(h("label",null,"Tipo contratto"),tsel);
+    tmf.append(h("label",null,"Costo"),h("input",{value:teamModal.cost||"",placeholder:"es. 24.000/anno",onInput:function(e){teamModal.cost=e.target.value;}}));
+    tmf.append(h("label",null,"Note costo"),h("input",{value:teamModal.costNote||"",onInput:function(e){teamModal.costNote=e.target.value;}}));
+    tmf.append(h("label",null,"Alias responsabile (separati da virgola) - per collegare alle task"),h("input",{value:(teamModal.aliases||[]).join(", "),onInput:function(e){teamModal.aliases=e.target.value.split(",").map(function(s){return s.trim();}).filter(Boolean);}}));
+    tmm.append(tmf);
+    tmm.append(h("div",{className:"tm-btns"},
+      h("button",{className:"cancel",onClick:function(){teamModal=null;render();}},"Annulla"),
+      h("button",{className:"save",onClick:function(){
+        if(!teamModal.name){alert("Nome obbligatorio");return;}
+        if(isEdit){var idx=team.findIndex(function(m){return m.id===teamModal.id;});if(idx>=0)team[idx]=teamModal;}
+        else{teamModal.id="t"+Date.now();teamModal.avatar=["#1B365D","#8B4513","#C49A2A","#2E8B57","#B22222","#4169E1","#6A5ACD","#DB7093","#008B8B"][Math.floor(Math.random()*9)];team.push(teamModal);}
+        save();teamModal=null;render();
+      }},isEdit?"Salva":"Aggiungi")
+    ));
+    tmbg.append(tmm);app.append(tmbg);
+  }
+if(modal){
+    const bg=h("div",{className:"modal-bg",onClick:()=>{modal=null;render();}});
+    const m=h("div",{className:"modal",onClick:e=>e.stopPropagation()});
+    m.append(h("h2",null,"Nuovo Task"));
+    const fr=h("div",{className:"fr"});
+    fr.append(h("label",null,"ID Task"),h("input",{value:modal.id,onInput:e=>{modal.id=e.target.value;}}));
+    fr.append(h("label",null,"Nome task"),h("input",{value:modal.t,onInput:e=>{modal.t=e.target.value;}}));
+    fr.append(h("label",null,"Responsabile"),h("input",{value:modal.r,onInput:e=>{modal.r=e.target.value;}}));
+    fr.append(h("label",null,"Area"),mkSel("",modal.s,SECS.map(s=>[s.id,s.i+" "+s.l]),v=>{modal.s=v;}));
+    fr.append(h("label",null,"Data inizio"),h("input",{value:modal.d0,placeholder:"gg/mm",onInput:e=>{modal.d0=e.target.value;}}));
+    fr.append(h("label",null,"Data fine"),h("input",{value:modal.d1,placeholder:"gg/mm",onInput:e=>{modal.d1=e.target.value;}}));
+    fr.append(h("label",null,"Settimana"),mkSel("",String(modal.w),WKS.map(w=>[String(w.id),w.l]),v=>{modal.w=+v;}));
+    fr.append(h("label",null,"Dipendenze"),h("input",{value:modal.dp,onInput:e=>{modal.dp=e.target.value;}}));
+    fr.append(h("label",null,"Descrizione"),h("textarea",{value:modal.desc||"",onInput:e=>{modal.desc=e.target.value;}}));
+    m.append(fr);
+    m.append(h("div",{className:"btns"},
+      h("button",{className:"cancel",onClick:()=>{modal=null;render();}},"Annulla"),
+      h("button",{className:"save",onClick:()=>{
+        if(!modal.t.trim()||!modal.id.trim())return alert("ID e nome obbligatori");
+        if(tasks.find(t=>t.id===modal.id))return alert("ID già esistente");
+        tasks.push({...modal,w:parseInt(modal.w),checks:modal.checks||[],refs:modal.refs||[]});
+        save();modal=null;render();
+      }},"Salva")
+    ));
+    bg.append(m);app.append(bg);
+  }
+}
+
+
+
+function showReport(){
+  var st2=stats();var pct=st2.tot>0?Math.round(st2.done/st2.tot*100):0;
+  var now=new Date();var dlf=Math.max(0,Math.ceil((new Date(2026,3,12)-now)/864e5));
+  var ovAll=tasks.filter(function(t){var pp=(t.d1||"").split("/");var ed=pp.length===2?new Date(2026,parseInt(pp[1])-1,parseInt(pp[0])):null;return ed&&ed<now&&gSt(t.id)!=="done";}).length;
+  var covAll=tasks.filter(function(t){var pp=(t.d1||"").split("/");var ed=pp.length===2?new Date(2026,parseInt(pp[1])-1,parseInt(pp[0])):null;return t.cr&&ed&&ed<now&&gSt(t.id)!=="done";}).length;
+  // Signal color
+  var timePct=getTimePct();var weekNum=getWeekNum();
+  var signal="green",sigTxt="IN LINEA",sigIcon="✅";
+  var progressGap=timePct-pct;
+  if(covAll>0||progressGap>30){signal="red";sigTxt="ATTENZIONE CRITICA";sigIcon="🔴";}
+  else if(ovAll>2||progressGap>15){signal="yellow";sigTxt="DA MONITORARE";sigIcon="⚠️";}
+
+  var bg=document.createElement("div");bg.className="rpt-bg";
+  bg.addEventListener("click",function(e){if(e.target===bg)bg.remove();});
+  var rpt=document.createElement("div");rpt.className="rpt";
+
+  // Actions bar
+  var acts=document.createElement("div");acts.className="rpt-actions";
+  var printBtn=document.createElement("button");printBtn.className="rpt-print";printBtn.textContent="🖨 Stampa / Salva PDF";
+  printBtn.addEventListener("click",function(){
+    var w2=window.open("","_blank");
+    w2.document.write("<html><head><title>Report CEO - Moto Elite Care</title>");
+    w2.document.write('<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">');
+    w2.document.write("<style>"+document.querySelector("style").textContent+"</style>");
+    w2.document.write("</head><body style='background:#fff'><div class='rpt'>");
+    w2.document.write(body.innerHTML);
+    w2.document.write("</div></body></html>");
+    w2.document.close();
+    setTimeout(function(){w2.print();},500);
+  });
+  var closeBtn=document.createElement("button");closeBtn.className="rpt-close";closeBtn.textContent="✕ Chiudi";
+  closeBtn.addEventListener("click",function(){bg.remove();});
+  acts.append(printBtn,closeBtn);
+  rpt.append(acts);
+
+  var body=document.createElement("div");body.className="rpt-body";
+
+  // Header
+  body.innerHTML='<h1>Report Stato Progetto</h1><div class="rpt-sub">Moto Élite Care — Piano Operativo di Lancio — Generato il '+now.toLocaleDateString("it-IT",{day:"numeric",month:"long",year:"numeric"})+'</div>';
+  body.innerHTML+='<div class="rpt-signal '+signal+'">'+sigIcon+" "+sigTxt+"</div>";
+  body.innerHTML+='<div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap"><div style="background:#f0f4ff;padding:8px 14px;border-radius:8px;font-size:12px;color:#1B365D"><b>Settimana '+weekNum+' di 5</b></div><div style="background:#f0f4ff;padding:8px 14px;border-radius:8px;font-size:12px;color:#1B365D">Tempo trascorso: <b>'+timePct+'%</b> | Progresso: <b>'+pct+'%</b>'+(progressGap>10?' <span style=\"color:#ef4444\">(⚠ gap '+progressGap+'%)</span>':'')+'</div></div>';
+
+  // KPIs
+  body.innerHTML+='<h2>Indicatori Chiave</h2>';
+  body.innerHTML+='<div class="rpt-grid"><div class="rpt-kpi"><div class="kv" style="color:#1B365D">'+pct+'%</div><div class="kl">Completamento</div></div><div class="rpt-kpi"><div class="kv" style="color:#22c55e">'+st2.done+'</div><div class="kl">Task completati su '+st2.tot+'</div></div><div class="rpt-kpi"><div class="kv" style="color:'+(dlf<7?"#ef4444":"#f59e0b")+'">'+dlf+'</div><div class="kl">Giorni all\'apertura</div></div><div class="rpt-kpi"><div class="kv" style="color:'+(ovAll>0?"#ef4444":"#22c55e")+'">'+ovAll+'</div><div class="kl">Task in ritardo</div></div></div>';
+
+  // Progress by area
+  
+  // PM Comment
+  if(pmComment){body.innerHTML+='<h2>Nota del Project Manager</h2><div style="background:#f8fafc;border-left:3px solid #C49A2A;padding:12px 16px;border-radius:0 8px 8px 0;font-size:12px;line-height:1.6;color:#374151;white-space:pre-wrap">'+pmComment.replace(/</g,"&lt;").replace(/>/g,"&gt;")+'</div>';}
+  
+  body.innerHTML+='<h2>Progresso per Area</h2>';
+  var areaHtml="";
+  SECS.forEach(function(sec){
+    var d=st2.bS[sec.id]||{t:0,d:0};var p=d.t>0?Math.round(d.d/d.t*100):0;
+    areaHtml+='<div class="rpt-area"><span style="font-size:16px">'+sec.i+'</span><span class="ra-name">'+sec.l+'</span><div class="ra-bar"><div class="ra-fill" style="width:'+p+'%;background:'+sec.c+'"></div></div><span class="ra-pct" style="color:'+sec.c+'">'+p+'%</span><span style="font-size:10px;color:#9ca3af;width:50px;text-align:right">'+d.d+'/'+d.t+'</span></div>';
+  });
+  body.innerHTML+=areaHtml;
+
+  // Key milestones
+  body.innerHTML+='<h2>Milestone Principali</h2>';
+  var milestones=[
+    {id:"1.4",t:"Deposito marchio UIBM",d:"14/03"},
+    {id:"2.9",t:"Stipula atto costitutivo SRL",d:"19-20/03"},
+    {id:"2.11",t:"Ottenimento P.IVA",d:"21-22/03"},
+    {id:"2.22",t:"Contratto licenza marchio firmato",d:"26-28/03"},
+    {id:"3.12",t:"Istanza AUA presentata al SUAP",d:"22-25/03"},
+    {id:"3.25",t:"SCIA artigianale presentata",d:"02-03/04"},
+    {id:"5.5",t:"Operatori selezionati e assunti",d:"28/03-05/04"},
+    {id:"6.9",t:"Sito web online con prenotazioni",d:"entro 01/04"},
+    {id:"7.12",t:"Evento inaugurazione",d:"11-12/04"},
+  ];
+  var msHtml="";
+  milestones.forEach(function(ms){
+    var task=tasks.find(function(t){return t.id===ms.id;});
+    var done=task&&gSt(task.id)==="done";
+    var icon=done?"✅":"⏳";
+    msHtml+='<div class="rpt-milestone"><span class="ms-icon">'+icon+'</span><span class="ms-txt">'+(done?"<s>":"")+ms.t+(done?"</s>":"")+'</span><span class="ms-date">'+ms.d+'</span></div>';
+  });
+  body.innerHTML+=msHtml;
+
+  // Budget
+  body.innerHTML+='<h2>Quadro Economico — Budget vs Actual</h2>';
+  var budgetHtml='<table class="rpt-budget"><tr><th>Area</th><th>Budget BP</th><th>Speso</th><th>Rimanente</th><th>%</th></tr>';
+  var totalPlanned=0,totalSpent2=0;
+  Object.keys(BUDGET_BP).forEach(function(k){var b=BUDGET_BP[k];var spent=budgetSpent[k]||0;var rem=b.planned-spent;var bpct=b.planned>0?Math.round(spent/b.planned*100):0;totalPlanned+=b.planned;totalSpent2+=spent;
+  budgetHtml+='<tr><td>'+b.label+'</td><td style="text-align:right">&euro; '+b.planned.toLocaleString("it-IT")+'</td><td style="text-align:right">&euro; '+spent.toLocaleString("it-IT")+'</td><td style="text-align:right;color:'+(rem<0?"#ef4444":"#374151")+'">&euro; '+rem.toLocaleString("it-IT")+'</td><td style="text-align:right;font-weight:600;color:'+(bpct>100?"#ef4444":bpct>80?"#f59e0b":"#374151")+'">'+bpct+'%</td></tr>';});
+  budgetHtml+='<tr style="font-weight:700;background:#f1f5f9"><td>TOTALE</td><td style="text-align:right">&euro; '+totalPlanned.toLocaleString("it-IT")+'</td><td style="text-align:right">&euro; '+totalSpent2.toLocaleString("it-IT")+'</td><td style="text-align:right">&euro; '+(totalPlanned-totalSpent2).toLocaleString("it-IT")+'</td><td style="text-align:right">'+Math.round(totalSpent2/totalPlanned*100)+'%</td></tr></table>';
+  body.innerHTML+=budgetHtml;
+  body.innerHTML+='<table class="rpt-budget"><tr><th>Voce</th><th>Budget BP Anno 1</th><th>Note</th></tr><tr><td>Investimento immobilizzazioni immateriali</td><td>€ 34.500</td><td>Costituzione, consulenze, sito web, marchio</td></tr><tr><td>Investimento immobilizzazioni materiali</td><td>€ 8.000</td><td>Veicoli, attrezzatura, elettronica</td></tr><tr><td>Manutenzione straordinaria centro</td><td>€ 15.000</td><td>Adeguamento locale</td></tr><tr><td>Personale interno</td><td>€ 111.000</td><td>CEO + COO + SMM + 2 operatori</td></tr><tr><td>Spese commerciali</td><td>€ 12.500</td><td>Marketing, fiere, pubblicità</td></tr><tr><td>Locali (affitto + utenze)</td><td>€ 18.000</td><td>Centro Milano</td></tr><tr><td>Altri costi fissi</td><td>€ 7.000</td><td>Assicurazioni, commercialista, hosting</td></tr><tr style="font-weight:700;background:#f1f5f9"><td>TOTALE COSTI FISSI</td><td>€ 154.400</td><td></td></tr><tr><td>Costi variabili stimati</td><td>€ 40.178</td><td>Prodotti, fotografo, POS</td></tr><tr style="font-weight:700;background:#e8f0fe"><td>FABBISOGNO FINANZIARIO</td><td>€ 91.145</td><td>Primi 3 mesi + investimenti</td></tr></table>';
+  body.innerHTML+='<div style="font-size:10px;color:#6b7280;margin-top:4px">⚠ Ricavi previsti Anno 1: € 152.938 | Break-even previsto: Anno 3 | Enterprise Value stimata: € 5,9M</div>';
+
+  // Risks
+  body.innerHTML+='<h2>Rischi Attivi</h2>';
+  var risksHtml="";
+  if(covAll>0)risksHtml+='<div class="rpt-risk rr"><b>🔴 AUA (Autorizzazione Unica Ambientale)</b> — Il termine ordinario di rilascio è 90 giorni, che supera la deadline. Mitigazione: documentazione impeccabile, follow-up costante con SUAP, verifica pre-autorizzazioni esistenti del locale.</div>';
+  if(ovAll>0)risksHtml+='<div class="rpt-risk ry"><b>⚠ Task in ritardo: '+ovAll+'</b> — Verificare le dipendenze e sbloccare le attività bloccanti. I task critici in ritardo sono '+covAll+'.</div>';
+  if(ovAll===0&&covAll===0)risksHtml+='<div class="rpt-risk" style="background:#dcfce7;border-left:3px solid #22c55e"><b>✅ Nessun rischio critico attivo</b> — Il progetto procede in linea con la pianificazione.</div>';
+  risksHtml+='<div class="rpt-risk ry"><b>⚠ Rischio permanente: AUA</b> — Indipendentemente dallo stato attuale, l\'Autorizzazione Unica Ambientale resta il rischio principale del progetto per i tempi di rilascio della Città Metropolitana.</div>';
+  body.innerHTML+=risksHtml;
+
+  // Next steps
+  
+  // Team summary in report
+  body.innerHTML+='<h2>Team di Progetto</h2>';
+  var teamHtml='<table class="rpt-budget"><tr><th>Membro</th><th>Ruolo</th><th>Tipo</th><th>Costo</th><th>Task</th><th>Stato</th><th>Alert</th></tr>';
+  team.forEach(function(m){
+    var mt=getTeamTasks(m);var dn2=mt.filter(function(t){return gSt(t.id)==="done";}).length;
+    var ovd2=mt.filter(function(t){return isOverdue(t);}).length;
+    var blk2=mt.filter(function(t){return gSt(t.id)==="blocked";}).length;
+    var typeL={dip:"Dipendente",free:"Freelance",cons:"Consulente",soc:"Socio"}[m.type]||m.type;
+    var pctM=mt.length>0?Math.round(dn2/mt.length*100):0;
+    var alertTxt="";
+    if(ovd2>0)alertTxt+='⚠ '+ovd2+' in ritardo ';
+    if(blk2>0)alertTxt+='🛑 '+blk2+' bloccati ';
+    if(mt.length>15)alertTxt+='⚡ Sovraccaricato ';
+    if(!alertTxt)alertTxt='✅';
+    teamHtml+='<tr><td><b>'+m.name+'</b></td><td style="font-size:10px">'+m.role+'</td><td>'+typeL+'</td><td>'+(m.cost?"€ "+m.cost:"-")+'</td><td>'+dn2+'/'+mt.length+'</td><td><div style="display:flex;align-items:center;gap:4px"><div style="width:50px;height:5px;background:#e5e7eb;border-radius:3px;overflow:hidden"><div style="height:100%;width:'+pctM+'%;background:'+(pctM===100?"#22c55e":"#C49A2A")+';border-radius:3px"></div></div><span style="font-size:10px">'+pctM+'%</span></div></td><td style="font-size:10px;color:'+(ovd2>0?"#ef4444":"#374151")+'">'+alertTxt+'</td></tr>';
+  });
+  teamHtml+='</table>';
+  body.innerHTML+=teamHtml;
+
+body.innerHTML+='<h2>Prossimi Passi (questa settimana)</h2>';
+  var nextHtml="<ul style='font-size:11px;line-height:1.6;padding-left:18px'>";
+  var upcoming=tasks.filter(function(t){return gSt(t.id)!=="done";}).sort(function(a,b){
+    var da=(a.d1||"99/99").split("/"),db=(b.d1||"99/99").split("/");
+    var na=parseInt(da[1]||99)*100+parseInt(da[0]||99),nb=parseInt(db[1]||99)*100+parseInt(db[0]||99);
+    return na-nb;
+  }).slice(0,8);
+  upcoming.forEach(function(t){
+    nextHtml+="<li>"+(t.cr?"⚡ ":"")+"<b>"+t.id+"</b> "+t.t+" <span style='color:#6b7280'>(→ "+t.d1+", "+t.r+")</span></li>";
+  });
+  nextHtml+="</ul>";
+  body.innerHTML+=nextHtml;
+
+  body.innerHTML+='<div class="rpt-footer">Moto Élite Care — Report generato automaticamente dalla Dashboard di Progetto — '+now.toLocaleDateString("it-IT")+" "+now.toLocaleTimeString("it-IT",{hour:"2-digit",minute:"2-digit"})+'</div>';
+
+  rpt.append(body);
+  bg.append(rpt);
+  document.body.append(bg);
+}
+
+
+function getTeamTasks(member){
+  var aliases=member.aliases||[member.name];
+  return tasks.filter(function(t){
+    return aliases.some(function(a){return t.r===a||t.r.indexOf(a)>=0;});
+  });
+}
+
+function rTeam(el,ft){
+  var totalCost=0;
+  var summaryItems=[];
+  team.forEach(function(m){
+    var mt=getTeamTasks(m);
+    var done=mt.filter(function(t){return gSt(t.id)==="done";}).length;
+    summaryItems.push({name:m.name,total:mt.length,done:done});
+  });
+  var totalTasks=summaryItems.reduce(function(a,b){return a+b.total;},0);
+
+  el.append(h("div",{className:"tm-summary"},
+    h("span",{className:"ts-title"},"Team di Progetto"),
+    h("span",{className:"ts-item"},"Membri: ",h("b",null,String(team.length))),
+    h("span",{className:"ts-item"},"Task assegnati: ",h("b",null,String(totalTasks)))
+  ));
+
+  var grid=h("div",{className:"team-grid"});
+  team.forEach(function(m){
+    var mt=getTeamTasks(m);
+    var done=mt.filter(function(t){return gSt(t.id)==="done";}).length;
+    var prog=mt.filter(function(t){return gSt(t.id)==="progress";}).length;
+    var blk=mt.filter(function(t){return gSt(t.id)==="blocked";}).length;
+    var ovd=mt.filter(function(t){var pp=(t.d1||"").split("/");var ed=pp.length===2?new Date(2026,parseInt(pp[1])-1,parseInt(pp[0])):null;return ed&&ed<new Date()&&gSt(t.id)!=="done";}).length;
+    var isO=teamOpen===m.id;
+    var typeLabel={dip:"Dipendente",free:"Freelance",cons:"Consulente",soc:"Socio"}[m.type]||m.type;
+    var typeCls={dip:"dip",free:"free",cons:"cons",soc:"soc"}[m.type]||"";
+
+    var card=h("div",{className:"tm-card"+(isO?" tm-open":""),onClick:function(e){if(e.target.tagName==="SELECT"||e.target.tagName==="BUTTON"||e.target.classList.contains("tgo"))return;teamOpen=isO?null:m.id;render();}});
+
+    var initials=m.name.split(" ").map(function(w){return w[0];}).join("").substring(0,2).toUpperCase();
+    card.append(h("div",{className:"tm-hd"},
+      h("div",{className:"tm-avatar",style:{background:m.avatar||"#666"}},initials),
+      h("div",{className:"tm-info"},h("div",{className:"tm-name"},m.name),h("div",{className:"tm-role"},m.role))
+    ));
+
+    var meta=h("div",{className:"tm-meta"});
+    meta.append(h("span",{className:"tm-tag "+typeCls},typeLabel));
+    if(m.cost)meta.append(h("span",{className:"tm-tag"},"€ "+m.cost));
+    card.append(meta);
+
+    card.append(h("div",{className:"tm-stats"},
+      h("span",null,"Task: ",h("b",null,String(mt.length))),
+      h("span",null,"Fatti: ",h("b",{style:{color:"var(--gn)"}},String(done))),
+      prog>0?h("span",null,"In corso: ",h("b",{style:{color:"var(--yl)"}},String(prog))):null,
+      ovd>0?h("span",{style:{color:"var(--rd)"}},"⚠ ",h("b",null,String(ovd))," in ritardo"):null
+    ));
+
+    if(isO){
+      var exp=h("div",{className:"tm-tasks"});
+      if(mt.length===0){
+        exp.append(h("div",{style:{textAlign:"center",padding:"10px",color:"var(--t3)",fontSize:"10px"}},"Nessun task assegnato. Verifica gli alias del membro."));
+      }
+      mt.sort(function(a,b){var da=(a.d1||"99/99").split("/"),db=(b.d1||"99/99").split("/");return(parseInt(da[1]||99)*100+parseInt(da[0]||99))-(parseInt(db[1]||99)*100+parseInt(db[0]||99));});
+      mt.forEach(function(t){
+        var so=gStO(gSt(t.id));var sec=gSec(t.s);
+        var row=h("div",{className:"tm-task"});
+        row.append(h("span",{className:"dot",style:{background:so.c}}));
+        row.append(h("span",{className:"tid",style:{color:sec?sec.c:"var(--t2)"}},t.id));
+        row.append(h("span",null,t.cr?"⚡":"",{style:{width:"10px",flexShrink:"0"}}));
+        row.append(h("span",{className:"ttx"},t.t));
+        row.append(h("span",{className:"tdt"},t.d0+"→"+t.d1));
+        var sel=h("select",{style:{background:so.bg,color:so.c},onChange:function(e){statuses[t.id]=e.target.value;save();render();}});
+        STS.forEach(function(s){var o=h("option",{value:s.v},s.l);if(gSt(t.id)===s.v)o.selected=true;sel.append(o);});
+        row.append(sel);
+        row.append(h("span",{className:"tgo",onClick:function(e){e.stopPropagation();selected=t.id;view="list";render();}},"➤"));
+        exp.append(row);
+      });
+
+      if(m.cost||m.costNote){
+        exp.append(h("div",{className:"tm-cost"},
+          m.cost?h("span",null,"Costo: ",h("b",null,"€ "+m.cost)):null,
+          m.costNote?h("span",{style:{marginLeft:"8px"}},"("+m.costNote+")"):null
+        ));
+      }
+
+      var acts=h("div",{className:"tm-actions"});
+      acts.append(h("button",{className:"tm-edit",onClick:function(e){e.stopPropagation();teamModal=Object.assign({},m,{aliases:m.aliases?m.aliases.slice():[]});teamModal._edit=true;render();}},"Modifica"));
+      acts.append(h("button",{className:"tm-del",onClick:function(e){e.stopPropagation();if(confirm("Rimuovere "+m.name+" dal team?")){team=team.filter(function(x){return x.id!==m.id;});if(teamOpen===m.id)teamOpen=null;save();render();}}},"Rimuovi"));
+      exp.append(acts);
+      card.append(exp);
+    }
+    grid.append(card);
+  });
+
+  // Add member card
+  grid.append(h("div",{className:"tm-add",onClick:function(){teamModal={name:"",role:"",type:"cons",cost:"",costNote:"",aliases:[]};render();}},"+ Aggiungi membro del team"));
+
+  el.append(grid);
+}
+
+function rMappa(el,ft){
+  var st2=stats();var pct2=st2.tot>0?Math.round(st2.done/st2.tot*100):0;
+  var dlf=Math.max(0,Math.ceil((new Date(2026,3,12)-new Date())/864e5));
+  el.append(h("div",{className:"map-summary"},h("span",{className:"ms-title"},"Mappa Progetto"),h("span",{className:"ms-item"},"Progresso: ",h("b",null,pct2+"%")),h("span",{className:"ms-item"},"Task: ",h("b",null,st2.done+"/"+st2.tot)),h("span",{className:"ms-item"},"Giorni rimasti: ",h("b",null,String(dlf)))));
+  var grid=h("div",{className:"map-grid"});
+  SECS.forEach(function(sec){
+    var secT=ft.filter(function(t){return t.s===sec.id;});
+    var d=st2.bS[sec.id]||{t:0,d:0};var p=d.t>0?Math.round(d.d/d.t*100):0;
+    var inP=secT.filter(function(t){return gSt(t.id)==="progress";}).length;
+    var blk=secT.filter(function(t){return gSt(t.id)==="blocked";}).length;
+    var ovd=secT.filter(function(t){var pp=t.d1?t.d1.split("/"):[];var ed=pp.length===2?new Date(2026,parseInt(pp[1])-1,parseInt(pp[0])):null;return ed&&ed<new Date()&&gSt(t.id)!=="done";}).length;
+    var isO=mapOpen===sec.id;
+    var card=h("div",{className:"map-card"+(isO?" mc-open":""),style:{borderColor:ovd>0&&!isO?"rgba(239,68,68,.4)":""},onClick:function(e){if(e.target.tagName==="SELECT"||e.target.tagName==="BUTTON"||e.target.tagName==="INPUT"||e.target.classList.contains("tdet"))return;mapOpen=isO?null:sec.id;render();}});
+    card.append(h("div",{style:{position:"absolute",top:"0",left:"0",right:"0",height:"3px",background:sec.c}}));
+    card.append(h("div",{className:"mc-head"},h("span",{className:"mc-icon"},sec.i),h("span",{className:"mc-pct",style:{color:p===100?"var(--gn)":p>50?sec.c:ovd>0?"var(--rd)":"var(--t2)"}},p+"%")));
+    card.append(h("div",{className:"mc-name",style:{color:sec.c}},sec.l));
+    card.append(h("div",{className:"mc-sub"},d.d+" di "+d.t+" completati"));
+    card.append(h("div",{className:"mc-bar"},h("div",{className:"mc-bar-fill",style:{width:p+"%",background:p===100?"var(--gn)":sec.c}})));
+    var sr=h("div",{className:"mc-stats"});
+    if(inP>0)sr.append(h("span",{className:"mc-stat"},h("span",{className:"dot",style:{background:"var(--yl)"}}),inP+" in corso"));
+    if(blk>0)sr.append(h("span",{className:"mc-stat"},h("span",{className:"dot",style:{background:"var(--rd)"}}),blk+" bloccati"));
+    if(ovd>0)sr.append(h("span",{className:"mc-stat",style:{color:"var(--rd)",fontWeight:"600"}},h("span",{className:"dot",style:{background:"var(--rd)"}}),ovd+" in ritardo"));
+    var crits=secT.filter(function(t){return t.cr;}).length;var critsD=secT.filter(function(t){return t.cr&&gSt(t.id)==="done";}).length;
+    if(crits>0)sr.append(h("span",{className:"mc-stat"},h("span",{className:"dot",style:{background:"var(--yl)"}}),critsD+"/"+crits+" critici"));
+    card.append(sr);
+    if(isO){
+      var exp=h("div",{className:"mc-expand"});
+      secT.forEach(function(t){
+        var so=gStO(gSt(t.id));var row=h("div",{className:"mc-task"});
+        row.append(h("span",{className:"dot",style:{background:so.c}}));
+        row.append(h("span",{className:"tid"},t.id));
+        row.append(h("span",{className:"tcr"},t.cr?"⚡":""));
+        row.append(h("span",{className:"ttx"},t.t));
+        var sel=h("select",{style:{background:so.bg,color:so.c},onChange:function(e){statuses[t.id]=e.target.value;save();render();}});
+        STS.forEach(function(s){var o=h("option",{value:s.v},s.l);if(gSt(t.id)===s.v)o.selected=true;sel.append(o);});
+        row.append(sel);
+        row.append(h("span",{className:"tdet",onClick:function(e){e.stopPropagation();selected=t.id;view="list";render();}},"➤"));
+        exp.append(row);
+      });
+      exp.append(h("div",{className:"mc-add",onClick:function(e){e.stopPropagation();modal={id:"",s:sec.id,t:"",r:"",d0:"",d1:"",dp:"—",cr:false,w:1,desc:"",checks:[],refs:[]};render();}},"+ Aggiungi task"));
+      card.append(exp);
+    }
+    grid.append(card);
+  });
+  el.append(grid);
+}
+
+
+function rGantt(el,ft){
+var sd=new Date(2026,2,10),ed=new Date(2026,3,12),now=new Date();
+var sim=now>ed?ed:(now<sd?sd:now);var days=[];
+for(var dd=new Date(sd);dd<=ed;dd.setDate(dd.getDate()+1))days.push(new Date(dd));
+var td=days.length;
+function pd(s){var p=(s||"").split("/");if(p.length!==2)return null;return new Date(2026,parseInt(p[1])-1,parseInt(p[0]));}
+function dii(dt){if(!dt)return 0;return Math.max(0,Math.min(Math.round((dt-sd)/864e5),td-1));}
+function we(d){return d.getDay()===0||d.getDay()===6;}
+var mn=["","","Mar","Apr"];
+var dn=ft.filter(function(t){return gSt(t.id)==="done";}).length;
+var ov=ft.filter(function(t){var e=pd(t.d1);return e&&e<sim&&gSt(t.id)!=="done";}).length;
+var cov=ft.filter(function(t){var e=pd(t.d1);return t.cr&&e&&e<sim&&gSt(t.id)!=="done";}).length;
+var dlf=Math.max(0,Math.ceil((ed-sim)/864e5));
+el.append(h("div",{className:"gps"},h("span",{className:"gpt"},"Stato Progetto"),h("span",{className:"gpi"},"Completati: ",h("b",null,dn+"/"+ft.length)),h("span",{className:"gpi"},"Giorni rimasti: ",h("b",null,String(dlf))),ov>0?h("span",{className:"gpa"},"⚠ "+ov+" in ritardo"):null,cov>0?h("span",{className:"gpa"},"🔴 "+cov+" CRITICI in ritardo!"):null));
+var wr=h("div",{className:"gw"}),gc2=h("div",{className:"gc"});
+var hdr=h("div",{className:"gc-hd"});hdr.append(h("div",{className:"gc-lh"},"Task"));
+var dr=h("div",{className:"gc-ds"});
+days.forEach(function(d){dr.append(h("div",{className:"gc-d"+(we(d)?" gwe":"")+(d.toDateString()===sim.toDateString()?" gtd":"")},d.getDate()+" "+mn[d.getMonth()]));});
+hdr.append(dr);gc2.append(hdr);
+var grpG={};ft.forEach(function(t){if(!grpG[t.s])grpG[t.s]={sec:gSec(t.s),tasks:[]};grpG[t.s].tasks.push(t);});
+var scc={todo:"#475569",progress:"#f59e0b",blocked:"#ef4444",done:"#22c55e"};
+Object.values(grpG).forEach(function(gr){
+gc2.append(h("div",{className:"gc-st",style:{color:gr.sec.c,background:gr.sec.c+"12"}},gr.sec.i+" "+gr.sec.l));
+gr.tasks.forEach(function(t){
+var row=h("div",{className:"gc-r"+(selected===t.id?" gsel":"")});
+row.append(h("div",{className:"gc-lb",onClick:function(){selected=t.id;render();}},h("span",{className:"gid",style:{color:gr.sec.c}},t.id),t.cr?h("span",{className:"gcr"},"⚡"):null,h("span",{className:"gtx"},t.t)));
+var ba=h("div",{className:"gc-bs"});days.forEach(function(d){ba.append(h("div",{className:"gc-cl"+(we(d)?" gwe":"")})  );});
+var s0=pd(t.d0),s1=pd(t.d1);
+if(s0&&s1){var si2=dii(s0),ei=dii(s1),stv=gSt(t.id);var lf=(si2/td*100)+"%";var wi=Math.max(((ei-si2+1)/td*100),(1/td*100))+"%";var bc=scc[stv];var od=s1<sim&&stv!=="done";if(od)bc="#ef4444";
+ba.append(h("div",{className:"gc-br",style:{left:lf,width:wi,background:bc,opacity:stv==="done"?"0.6":"1",border:od?"1px solid #ff6b6b":"none"},onClick:function(e){e.stopPropagation();selected=t.id;render();}},h("span",null,t.r)));}
+var ti=dii(sim);ba.append(h("div",{className:"gc-tl",style:{left:((ti+.5)/td*100)+"%"}}));
+row.append(ba);gc2.append(row);});});
+wr.append(gc2);el.append(wr);
+el.append(h("div",{className:"gc-lg"},...[{c:"#475569",l:"Da fare"},{c:"#f59e0b",l:"In corso"},{c:"#ef4444",l:"Bloccato/Ritardo"},{c:"#22c55e",l:"Completato"}].map(function(x){return h("div",null,h("div",{className:"gsw",style:{background:x.c}}),x.l);}),h("div",null,h("div",{className:"gsw",style:{background:"var(--rd)",width:"2px",height:"12px"}}),"Oggi")));
+}
+
+
+function saveToFile(){
+  var data=JSON.stringify({tasks:tasks,statuses:statuses,notes:notes,checks:checks,team:team,pmComment:pmComment,budgetSpent:budgetSpent,_exported:new Date().toISOString()},null,2);
+  var blob=new Blob([data],{type:"application/json"});
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download="MEC_Backup_"+new Date().toISOString().slice(0,10)+".json";a.click();
+}
+function loadFromFile(){
+  var inp=document.createElement("input");inp.type="file";inp.accept=".json";
+  inp.addEventListener("change",function(){
+    var file=inp.files[0];if(!file)return;
+    var reader=new FileReader();
+    reader.onload=function(e){
+      try{
+        var d=JSON.parse(e.target.result);
+        if(d.tasks)tasks=d.tasks;
+        if(d.statuses)statuses=d.statuses;
+        if(d.notes)notes=d.notes;
+        if(d.checks)checks=d.checks;
+        if(d.team)team=d.team;
+        if(d.pmComment!==undefined)pmComment=d.pmComment;
+        if(d.budgetSpent)budgetSpent=d.budgetSpent;
+        save();render();
+        alert("Dati caricati con successo! (Backup del "+((d._exported||"").slice(0,10)||"sconosciuto")+")");
+      }catch(err){alert("Errore nel file: "+err.message);}
+    };
+    reader.readAsText(file);
+  });
+  inp.click();
+}
+
+render();
+</script>
+</body>
+</html>
