@@ -1267,6 +1267,13 @@ if(modal){
 
 
 
+function getTeamTasks(member){
+  var aliases=member.aliases||[member.name];
+  return tasks.filter(function(t){
+    return aliases.some(function(a){return t.r===a||t.r.indexOf(a)>=0;});
+  });
+}
+
 function showReport(){
   var st2=stats();var pct=st2.tot>0?Math.round(st2.done/st2.tot*100):0;
   var now=new Date();var dlf=Math.max(0,Math.ceil((new Date(2026,3,12)-now)/864e5));
