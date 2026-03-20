@@ -1475,7 +1475,7 @@ function rTeam(el,ft){
         var row=h("div",{className:"tm-task"});
         row.append(h("span",{className:"dot",style:{background:so.c}}));
         row.append(h("span",{className:"tid",style:{color:sec?sec.c:"var(--t2)"}},t.id));
-        row.append(h("span",null,t.cr?"⚡":"",{style:{width:"10px",flexShrink:"0"}}));
+        row.append(h("span",{style:{width:"10px",flexShrink:"0",color:"var(--yl)",fontSize:"8px"}},t.cr?"⚡":""));
         row.append(h("span",{className:"ttx"},t.t));
         row.append(h("span",{className:"tdt"},t.d0+"→"+t.d1));
         var sel=h("select",{style:{background:so.bg,color:so.c},onChange:function(e){statuses[t.id]=e.target.value;save();render();}});
